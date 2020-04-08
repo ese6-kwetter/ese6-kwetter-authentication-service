@@ -19,20 +19,30 @@ jobs:
       run: dotnet test
     - name: Publish
       run: dotnet publish -c Release -o out
-    - name: Upload publish artifact
+    - name: Upload release artifact
       uses: actions/upload-artifact@v1
       with:
         name: out
         path: ./out/AuthenticationService.dll
+    - name: Upload Dockerfile artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: dockerfile-artifact
+        path: ./Dockerfile
   deliver:
     needs: build
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
-      - name: Download artifact
+      - name: Download release artifact
         uses: actions/download-artifact@v1
         with:
           name: out
+          path: .
+      - name: Download Dockerfile artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: dockerfile-artifact
+          path: .
       - name: Deliver Docker image
         env:
           CONTAINER_IMAGE: ${{ secrets.DOCKER_USER }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
