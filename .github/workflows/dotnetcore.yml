@@ -5,6 +5,8 @@ on: [pull_request]
 jobs:
   build:
     runs-on: ubuntu-18.04
+    container:
+      image: mcr.microsoft.com/dotnet/core/sdk:3.1.201-bionic
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -22,7 +24,7 @@ jobs:
     - name: Upload release artifact
       uses: actions/upload-artifact@v1
       with:
-        name: out
+        name: release-artifact
         path: ./out/AuthenticationService.dll
     - name: Upload Dockerfile artifact
       uses: actions/upload-artifact@v1
@@ -36,7 +38,7 @@ jobs:
       - name: Download release artifact
         uses: actions/download-artifact@v1
         with:
-          name: out
+          name: release-artifact
           path: .
       - name: Download Dockerfile artifact
         uses: actions/download-artifact@v1
