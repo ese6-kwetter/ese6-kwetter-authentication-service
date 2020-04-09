@@ -14,11 +14,11 @@ namespace AuthenticationService.Repositories
         Task<List<User>> Get();
 
         /// <summary>
-        /// Gets a single user by their email address
+        /// Gets a single user by their username
         /// </summary>
-        /// <param name="email">The email address to search for</param>
-        /// <returns>User with the correct email address</returns>
-        Task<User> Get(string email);
+        /// <param name="username">The username to search for</param>
+        /// <returns>User with the correct username</returns>
+        Task<User> Get(string username);
 
         /// <summary>
         /// Gets a single user by their Guid

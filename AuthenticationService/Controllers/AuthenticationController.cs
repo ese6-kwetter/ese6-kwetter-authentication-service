@@ -38,7 +38,12 @@ namespace AuthenticationService.Controllers
         [HttpPost("google")]
         public async Task<IActionResult> Google([FromBody] UserModel model)
         {
-            return BadRequest();
+            var user = await _service.Google();
+
+            if (user == null)
+                return BadRequest();
+
+            return Ok(user);
         }
     }
 }

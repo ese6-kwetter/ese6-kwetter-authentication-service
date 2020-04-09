@@ -22,8 +22,8 @@ namespace AuthenticationService.Repositories
         public async Task<List<User>> Get() =>
             await _users.Find(user => true).ToListAsync();
 
-        public async Task<User> Get(string email) =>
-            await _users.Find(user => user.Email == email).FirstOrDefaultAsync();
+        public async Task<User> Get(string username) =>
+            await _users.Find(user => user.Email == username).FirstOrDefaultAsync();
 
         public async Task<User> Get(Guid id) =>
             await _users.Find(book => book.Id == id).FirstOrDefaultAsync();

@@ -24,35 +24,27 @@ namespace AuthenticationService.Services
 
         public async Task<User> Password(string username, string password)
         {
-            // var users = await _repository.Get();
-            // var user = users.SingleOrDefault(x => x.Username == username && x.Password == password);
+            //var users = await _repository.Get(username);
+            //var user = users.SingleOrDefault(x => x.Username == username && x.Password == password);
 
             var user = new User { Id = new Guid(), Username = "test", Password = "test" };
             
             if (user == null)
                 return null;
 
-            user.JwtToken = GenerateJwtToken(user.Id.ToString());
+            user.JwtToken = JwtTokenGenerator.Generate(user.Id.ToString(), _appSettings.JwtSecret);
             
             return user.WithoutPassword();
         }
 
-        private string GenerateJwtToken(string userId)
+        public Task<User> Google()
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.JwtSecret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[] 
-                {
-                    new Claim(ClaimTypes.Name, userId)
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            
-            return tokenHandler.WriteToken(token);
+            throw new NotImplementedException();
+        }
+
+        public Task<User> Register(string username, string password, string email)
+        {
+            throw new NotImplementedException();
         }
     }
 }
