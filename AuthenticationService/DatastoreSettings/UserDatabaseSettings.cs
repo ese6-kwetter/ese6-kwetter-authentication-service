@@ -1,13 +1,13 @@
 ﻿namespace AuthenticationService.DataStoreSettings
 {
-    public class UserDataStoreSettings : IUserDataStoreSettings
+    public class UserDatabaseSettings : IUserDatabaseSettings
     {
         public string UserCollectionName { get; set; }
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }
     }
 
-    public interface IUserDataStoreSettings
+    public interface IUserDatabaseSettings
     {
         string UserCollectionName { get; set; }
         string ConnectionString { get; set; }

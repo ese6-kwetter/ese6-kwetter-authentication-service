@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AuthenticationService.Models;
+using AuthenticationService.Entities;
 
 namespace AuthenticationService.Repositories
 {

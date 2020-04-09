@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AuthenticationService.DataStoreSettings;
-using AuthenticationService.Models;
+using AuthenticationService.Entities;
 using MongoDB.Driver;
 
 namespace AuthenticationService.Repositories
@@ -11,7 +11,7 @@ namespace AuthenticationService.Repositories
     {
         private readonly IMongoCollection<User> _users;
 
-        public UserRepository(IUserDataStoreSettings settings)
+        public UserRepository(IUserDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);

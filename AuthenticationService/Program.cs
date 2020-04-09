@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AuthenticationService.Models;
+using AuthenticationService.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -17,15 +17,14 @@ namespace AuthenticationService
     {
         public static void Main(string[] args)
         {
-            var json = File.ReadAllText(@"appsettings.json");
-            var jsonObject = JObject.Parse(@json);
-            AppSettings.Settings = JsonConvert.DeserializeObject<AppSettings>(jsonObject["AppSettings"].ToString());
-            
             CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>().UseUrls("http://localhost:4000");
+                });
     }
 }
