@@ -8,31 +8,31 @@ namespace AuthenticationService.Repositories
     public interface IUserRepository
     {
         /// <summary>
+        /// Creates a new user
+        /// </summary>
+        /// <param name="user">User to be saved</param>
+        /// <returns>Created user</returns>
+        Task<User> Create(User user);
+        
+        /// <summary>
         /// Gets a list of all the users
         /// </summary>
         /// <returns>List of all the users</returns>
-        Task<List<User>> Get();
+        Task<List<User>> Read();
 
         /// <summary>
         /// Gets a single user by their username
         /// </summary>
         /// <param name="username">The username to search for</param>
         /// <returns>User with the correct username</returns>
-        Task<User> Get(string username);
+        Task<User> Read(string username);
 
         /// <summary>
         /// Gets a single user by their Guid
         /// </summary>
         /// <param name="id">The guid to search for</param>
         /// <returns>User with the correct guid</returns>
-        Task<User> Get(Guid id);
-
-        /// <summary>
-        /// Creates a new user
-        /// </summary>
-        /// <param name="user">User to be saved</param>
-        /// <returns>Created user</returns>
-        Task<User> Create(User user);
+        Task<User> Read(Guid id);
 
         /// <summary>
         /// Updates an existing user
@@ -46,13 +46,13 @@ namespace AuthenticationService.Repositories
         /// Removes an user
         /// </summary>
         /// <param name="userIn">User to remove</param>
-        void Remove(User userIn);
+        Task Delete(User userIn);
 
         /// <summary>
         /// Removes an user by their Guid
         /// </summary>
         /// <param name="id">Guid of the user to remove</param>
         /// <returns>Async task to await</returns>
-        Task Remove(Guid id);
+        Task Delete(Guid id);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace AuthenticationService.Views
+﻿namespace AuthenticationService.Models
 {
     public class RegisterModel
     {

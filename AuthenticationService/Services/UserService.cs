@@ -13,18 +13,18 @@ namespace AuthenticationService.Services
 {
     public class UserService : IUserService
     {
-        private readonly AppSettings _appSettings;
         private readonly IUserRepository _repository;
+        private readonly ITokenGenerator _tokenGenerator;
         
-        public UserService(IOptions<AppSettings> appSettings, IUserRepository repository)
+        public UserService(IUserRepository repository, ITokenGenerator tokenGenerator)
         {
-            _appSettings = appSettings.Value;
             _repository = repository;
+            _tokenGenerator = tokenGenerator;
         }
 
         public async Task<User> Password(string username, string password)
         {
-            //var users = await _repository.Get(username);
+            //var users = await _repository.Read(username);
             //var user = users.SingleOrDefault(x => x.Username == username && x.Password == password);
 
             var user = new User { Id = new Guid(), Username = "test", Password = "test" };
@@ -32,7 +32,7 @@ namespace AuthenticationService.Services
             if (user == null)
                 return null;
 
-            user.JwtToken = JwtTokenGenerator.Generate(user.Id.ToString(), _appSettings.JwtSecret);
+            user.JwtToken = _tokenGenerator.GenerateJwt(user.Id);
             
             return user.WithoutPassword();
         }

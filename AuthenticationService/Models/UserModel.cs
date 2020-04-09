@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AuthenticationService.Views
+namespace AuthenticationService.Models
 {
     public class UserModel
     {

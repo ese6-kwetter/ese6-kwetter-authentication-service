@@ -31,6 +31,7 @@ namespace AuthenticationService
             // Configure DI for application services
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ITokenGenerator, TokenGenerator>();
 
             // Configure Database Settings
             services.Configure<UserDatabaseSettings>(Configuration.GetSection(nameof(UserDatabaseSettings)));

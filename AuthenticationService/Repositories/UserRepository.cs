@@ -18,29 +18,29 @@ namespace AuthenticationService.Repositories
 
             _users = database.GetCollection<User>(settings.UserCollectionName);
         }
-
-        public async Task<List<User>> Get() =>
-            await _users.Find(user => true).ToListAsync();
-
-        public async Task<User> Get(string username) =>
-            await _users.Find(user => user.Email == username).FirstOrDefaultAsync();
-
-        public async Task<User> Get(Guid id) =>
-            await _users.Find(book => book.Id == id).FirstOrDefaultAsync();
-
+        
         public async Task<User> Create(User user)
         {
             await _users.InsertOneAsync(user);
             return user;
         }
 
+        public async Task<List<User>> Read() =>
+            await _users.Find(user => true).ToListAsync();
+
+        public async Task<User> Read(string username) =>
+            await _users.Find(user => user.Username == username).FirstOrDefaultAsync();
+
+        public async Task<User> Read(Guid id) =>
+            await _users.Find(user => user.Id == id).FirstOrDefaultAsync();
+
         public async Task Update(Guid id, User userIn) =>
             await _users.ReplaceOneAsync(user => user.Id == id, userIn);
 
-        public async void Remove(User userIn) =>
+        public async Task Delete(User userIn) =>
             await _users.DeleteOneAsync(user => user.Id == userIn.Id);
 
-        public async Task Remove(Guid id) =>
+        public async Task Delete(Guid id) =>
             await _users.DeleteOneAsync(user => user.Id == id);
     }
 }

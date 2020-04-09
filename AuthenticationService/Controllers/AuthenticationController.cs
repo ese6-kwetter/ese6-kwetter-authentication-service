@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AuthenticationService.Entities;
 using AuthenticationService.Helpers;
 using AuthenticationService.Services;
-using AuthenticationService.Views;
+using AuthenticationService.Models;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;

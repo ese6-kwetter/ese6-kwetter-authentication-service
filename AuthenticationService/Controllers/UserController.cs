@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using AuthenticationService.Services;
-using AuthenticationService.Views;
+using AuthenticationService.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthenticationService.Controllers
