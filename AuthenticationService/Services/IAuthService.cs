@@ -3,11 +3,11 @@ using AuthenticationService.Entities;
 
 namespace AuthenticationService.Services
 {
-    public interface IAuthenticationService
+    public interface IAuthService
     {
         
         Task<User> LoginPassword(string email, string password);
         Task<User> LoginGoogle(string tokenId);
-        Task<User> LoginApple();
+        Task<User> LoginApple(string tokenId);
     }
 }

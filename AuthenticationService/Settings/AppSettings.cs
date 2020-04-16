@@ -1,4 +1,4 @@
-﻿namespace AuthenticationService.Helpers
+﻿namespace AuthenticationService.Settings
 {
     public class AppSettings
     {

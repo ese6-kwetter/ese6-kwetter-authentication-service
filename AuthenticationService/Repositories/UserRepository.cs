@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AuthenticationService.DataStoreSettings;
 using AuthenticationService.Entities;
+using AuthenticationService.Settings;
 using MongoDB.Driver;
 
 namespace AuthenticationService.Repositories

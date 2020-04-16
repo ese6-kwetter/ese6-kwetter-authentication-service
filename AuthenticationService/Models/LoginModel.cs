@@ -2,11 +2,9 @@
 
 namespace AuthenticationService.Models
 {
-    public class UserModel
+    public class LoginModel
     {
-        [Required]
-        public string Username { get; set; }
-        [Required]
+        public string Email { get; set; }
         public string Password { get; set; }
         public string TokenId { get; set; }
     }

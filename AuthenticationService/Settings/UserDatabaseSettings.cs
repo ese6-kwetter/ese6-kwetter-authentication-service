@@ -1,4 +1,4 @@
-﻿namespace AuthenticationService.DataStoreSettings
+﻿namespace AuthenticationService.Settings
 {
     public class UserDatabaseSettings : IUserDatabaseSettings
     {

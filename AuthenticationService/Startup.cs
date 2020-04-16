@@ -1,8 +1,8 @@
 using System.Text;
-using AuthenticationService.DataStoreSettings;
 using AuthenticationService.Helpers;
 using AuthenticationService.Repositories;
 using AuthenticationService.Services;
+using AuthenticationService.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,8 +29,10 @@ namespace AuthenticationService
             services.AddControllers();
 
             // Configure DI for application services
+            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IHashGenerator, HashGenerator>();
             services.AddTransient<ITokenGenerator, TokenGenerator>();
 
             // Configure Database Settings
