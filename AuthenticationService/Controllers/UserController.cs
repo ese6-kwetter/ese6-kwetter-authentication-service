@@ -16,10 +16,32 @@ namespace AuthenticationService.Controllers
             _service = service;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        [HttpPost("register/password")]
+        public async Task<IActionResult> RegisterPassword([FromBody] RegisterModel model)
         {
-            var user = await _service.Register(model.Username, model.Password, model.Email);
+            var user = await _service.RegisterPassword(model.Email, model.Username, model.Password);
+
+            if (user == null)
+                return BadRequest();
+
+            return Ok(user);
+        }
+
+        [HttpPost("register/google")]
+        public async Task<IActionResult> RegisterGoogle([FromBody] RegisterModel model)
+        {
+            var user = await _service.RegisterGoogle();
+
+            if (user == null)
+                return BadRequest();
+
+            return Ok(user);
+        }
+
+        [HttpPost("register/apple")]
+        public async Task<IActionResult> RegisterApple([FromBody] RegisterModel model)
+        {
+            var user = await _service.RegisterApple();
 
             if (user == null)
                 return BadRequest();

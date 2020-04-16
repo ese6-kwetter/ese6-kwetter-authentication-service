@@ -7,8 +7,8 @@ namespace AuthenticationService.Services
 {
     public interface IUserService
     {
-        Task<User> Password(string username, string password);
-        Task<User> Google();
-        Task<User> Register(string username, string password, string email);
+        Task<User> RegisterPassword(string email, string username, string password);
+        Task<User> RegisterGoogle(string tokenId);
+        Task<User> RegisterApple();
     }
 }

@@ -1,8 +1,8 @@
 using NUnit.Framework;
 
-namespace AuthenticationServiceTests
+namespace AuthenticationServiceTests.Controller
 {
-    public class Tests
+    public class AuthenticationControllerTests
     {
         [SetUp]
         public void Setup()

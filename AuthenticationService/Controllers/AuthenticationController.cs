@@ -17,17 +17,17 @@ namespace AuthenticationService.Controllers
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IUserService _service;
+        private readonly IAuthenticationService _service;
 
-        public AuthenticationController(IUserService service)
+        public AuthenticationController(IAuthenticationService service)
         {
             _service = service;
         }
 
         [HttpPost("password")]
-        public async Task<IActionResult> Password([FromBody] UserModel model)
+        public async Task<IActionResult> LoginPassword([FromBody] UserModel model)
         {
-            var user = await _service.Password(model.Username, model.Password);
+            var user = await _service.LoginPassword(model.Username, model.Password);
 
             if (user == null)
                 return BadRequest();
@@ -36,9 +36,20 @@ namespace AuthenticationService.Controllers
         }
         
         [HttpPost("google")]
-        public async Task<IActionResult> Google([FromBody] UserModel model)
+        public async Task<IActionResult> LoginGoogle([FromBody] UserModel model)
         {
-            var user = await _service.Google();
+            var user = await _service.LoginGoogle(model.TokenId);
+
+            if (user == null)
+                return BadRequest();
+
+            return Ok(user);
+        }
+        
+        [HttpPost("apple")]
+        public async Task<IActionResult> LoginApple([FromBody] UserModel model)
+        {
+            var user = await _service.LoginApple();
 
             if (user == null)
                 return BadRequest();

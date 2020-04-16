@@ -28,11 +28,14 @@ namespace AuthenticationService.Repositories
         public async Task<List<User>> Read() =>
             await _users.Find(user => true).ToListAsync();
 
-        public async Task<User> Read(string username) =>
-            await _users.Find(user => user.Username == username).FirstOrDefaultAsync();
-
         public async Task<User> Read(Guid id) =>
             await _users.Find(user => user.Id == id).FirstOrDefaultAsync();
+        
+        public async Task<User> ReadByUsername(string username) =>
+            await _users.Find(user => user.Username == username).FirstOrDefaultAsync();
+        
+        public async Task<User> ReadByEmail(string email) =>
+            await _users.Find(user => user.Email == email).FirstOrDefaultAsync();
 
         public async Task Update(Guid id, User userIn) =>
             await _users.ReplaceOneAsync(user => user.Id == id, userIn);
