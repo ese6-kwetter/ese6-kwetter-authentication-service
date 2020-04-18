@@ -25,7 +25,7 @@ namespace AuthenticationServiceTests.Services
         }
 
         [Test]
-        public async Task RegisterPassword_ReturnUserWithoutPassword()
+        public async Task RegisterPassword_UserWithPassword_ReturnUserWithoutPassword()
         {
             // Arrange
             const string username = "test";
@@ -60,7 +60,7 @@ namespace AuthenticationServiceTests.Services
         }
 
         [Test]
-        public async Task RegisterPassword_ExistingUsername_ThrowException()
+        public async Task RegisterPassword_ExistingUsername_ThrowUsernameAlreadyExistsException()
         {
             // Arrange
             const string username = "test";
@@ -89,7 +89,7 @@ namespace AuthenticationServiceTests.Services
         }
 
         [Test]
-        public async Task RegisterPassword_ExistingEmail_ThrowException()
+        public async Task RegisterPassword_ExistingEmail_ThrowEmailAlreadyExistsException()
         {
             // Arrange
             const string username = "test";
