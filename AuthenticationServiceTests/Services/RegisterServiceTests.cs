@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AuthenticationService.Entities;
+using AuthenticationService.Exceptions;
 using AuthenticationService.Helpers;
 using AuthenticationService.Repositories;
 using AuthenticationService.Services;
@@ -84,7 +85,7 @@ namespace AuthenticationServiceTests.Services
             var service = new RegisterService(_repository.Object, _hashGenerator.Object);
             
             // Assert
-            Assert.ThrowsAsync<ArgumentException>(() => service.RegisterPassword(username, email, password));
+            Assert.ThrowsAsync<UsernameAlreadyExistsException>(() => service.RegisterPassword(username, email, password));
         }
 
         [Test]
@@ -113,7 +114,7 @@ namespace AuthenticationServiceTests.Services
             var service = new RegisterService(_repository.Object, _hashGenerator.Object);
 
             // Assert
-            Assert.ThrowsAsync<ArgumentException>(() => service.RegisterPassword(username, email, password));
+            Assert.ThrowsAsync<EmailAlreadyExistsException>(() => service.RegisterPassword(username, email, password));
         }
     }
 }

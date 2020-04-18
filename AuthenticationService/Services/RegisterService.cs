@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AuthenticationService.Entities;
+using AuthenticationService.Exceptions;
 using AuthenticationService.Helpers;
 using AuthenticationService.Repositories;
 using Google.Apis.Auth;
@@ -27,10 +28,10 @@ namespace AuthenticationService.Services
         public async Task<User> RegisterPassword(string username, string email, string password)
         {
             if (await _repository.ReadByUsername(username) != null)
-                throw new ArgumentException("A user with this name already exists.");
+                throw new UsernameAlreadyExistsException();
 
             if (await _repository.ReadByEmail(email) != null)
-                throw new ArgumentException("A user with this email already exists.");
+                throw new EmailAlreadyExistsException();
 
             var salt = _hashGenerator.Salt();
             var hashedPassword = _hashGenerator.Hash(password, salt);
@@ -49,18 +50,18 @@ namespace AuthenticationService.Services
 
         public async Task<User> RegisterGoogle(string tokenId)
         {
-            throw new NotImplementedException();
             var payload = await GoogleJsonWebSignature.ValidateAsync(
                 tokenId, new GoogleJsonWebSignature.ValidationSettings()
             );
 
             // Check if user already exists
             var user = await _repository.ReadByEmail(payload.Email);
+            
             if (user != null)
             {
                 if (user.OAuthIssuer == "Google")
-                    throw new ArgumentException("A user with this Google account already exists.");
-                throw new ArgumentException("A user with this email already exists.");
+                    throw new GoogleAccountAlreadyExistsException();
+                throw new EmailAlreadyExistsException();
             }
 
             user = await _repository.Create(new User

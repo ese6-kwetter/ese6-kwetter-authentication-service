@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AuthenticationService.Entities;
+using AuthenticationService.Exceptions;
 using AuthenticationService.Helpers;
 using AuthenticationService.Repositories;
 using Google.Apis.Auth;
@@ -22,14 +23,13 @@ namespace AuthenticationService.Services
         
         public async Task<User> LoginPassword(string email, string password)
         {
-            throw new NotImplementedException();
             var user = await _repository.ReadByEmail(email);
 
             if (user == null)
-                throw new ArgumentException("A user with this email does not exist.");
+                throw new EmailNotFoundException();
             
             if (!_hashGenerator.Verify(password, user.Salt, user.Password))
-                throw new ArgumentException("The password is incorrect.");
+                throw new IncorrectPasswordException();
 
             user.JwtToken = _tokenGenerator.GenerateJwt(user.Id);
             
@@ -38,17 +38,17 @@ namespace AuthenticationService.Services
 
         public async Task<User> LoginGoogle(string tokenId)
         {
-            throw new NotImplementedException();
             var payload = await GoogleJsonWebSignature.ValidateAsync(
                 tokenId, new GoogleJsonWebSignature.ValidationSettings()
             );
             
             if (payload == null)
-                throw new ArgumentException("This Google account does not exist.");
+                throw new GoogleAccountNotFoundException();
 
             var user = await _repository.ReadByEmail(payload.Email);
+            
             if (user == null)
-                throw new ArgumentException("A user with this Google account does not exist.");
+                throw new GoogleAccountNotFoundException();
 
             user.JwtToken = _tokenGenerator.GenerateJwt(user.Id);
 
