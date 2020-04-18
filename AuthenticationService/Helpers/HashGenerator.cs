@@ -32,6 +32,7 @@ namespace AuthenticationService.Helpers
         public bool Verify(string plainText, byte[] salt, byte[] hash)
         {
             var hashedPlainText = Hash(plainText, salt);
+            
             return hash.SequenceEqual(hashedPlainText);
         }
     }

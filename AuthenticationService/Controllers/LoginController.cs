@@ -15,11 +15,11 @@ namespace AuthenticationService.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthenticationController : ControllerBase
+    public class LoginController : ControllerBase
     {
-        private readonly IAuthService _service;
+        private readonly ILoginService _service;
 
-        public AuthenticationController(IAuthService service)
+        public LoginController(ILoginService service)
         {
             _service = service;
         }

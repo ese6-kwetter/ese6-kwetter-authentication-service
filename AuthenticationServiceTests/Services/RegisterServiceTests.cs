@@ -11,7 +11,7 @@ using NUnit.Framework.Internal.Execution;
 namespace AuthenticationServiceTests.Services
 {
     [TestFixture]
-    public class UserServiceTests
+    public class RegisterServiceTests
     {
         private Mock<IUserRepository> _repository;
         private Mock<IHashGenerator> _hashGenerator;
@@ -48,7 +48,7 @@ namespace AuthenticationServiceTests.Services
             _repository.Setup(r => r.Create(user))
                 .ReturnsAsync(user);
 
-            var service = new UserService(_repository.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _hashGenerator.Object);
 
             // Act
             var result = await service.RegisterPassword(username, email, password);
@@ -81,7 +81,7 @@ namespace AuthenticationServiceTests.Services
             };
             _repository.Setup(r => r.ReadByUsername(username)).ReturnsAsync(user);
 
-            var service = new UserService(_repository.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _hashGenerator.Object);
             
             // Assert
             Assert.ThrowsAsync<ArgumentException>(() => service.RegisterPassword(username, email, password));
@@ -110,7 +110,7 @@ namespace AuthenticationServiceTests.Services
             };
             _repository.Setup(r => r.ReadByEmail(email)).ReturnsAsync(user);
 
-            var service = new UserService(_repository.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _hashGenerator.Object);
 
             // Assert
             Assert.ThrowsAsync<ArgumentException>(() => service.RegisterPassword(username, email, password));

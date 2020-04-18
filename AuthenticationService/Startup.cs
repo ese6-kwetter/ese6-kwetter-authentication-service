@@ -29,8 +29,8 @@ namespace AuthenticationService
             services.AddControllers();
 
             // Configure DI for application services
-            services.AddTransient<IAuthService, AuthService>();
-            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ILoginService, LoginService>();
+            services.AddTransient<IRegisterService, RegisterService>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IHashGenerator, HashGenerator>();
             services.AddTransient<ITokenGenerator, TokenGenerator>();

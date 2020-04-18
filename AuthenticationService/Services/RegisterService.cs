@@ -13,12 +13,12 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AuthenticationService.Services
 {
-    public class UserService : IUserService
+    public class RegisterService : IRegisterService
     {
         private readonly IUserRepository _repository;
         private readonly IHashGenerator _hashGenerator;
         
-        public UserService(IUserRepository repository, IHashGenerator hashGenerator)
+        public RegisterService(IUserRepository repository, IHashGenerator hashGenerator)
         {
             _repository = repository;
             _hashGenerator = hashGenerator;

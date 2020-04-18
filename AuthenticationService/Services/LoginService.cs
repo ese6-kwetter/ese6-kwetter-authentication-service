@@ -7,13 +7,13 @@ using Google.Apis.Auth;
 
 namespace AuthenticationService.Services
 {
-    public class AuthService : IAuthService
+    public class LoginService : ILoginService
     {
         private readonly IUserRepository _repository;
         private readonly IHashGenerator _hashGenerator;
         private readonly ITokenGenerator _tokenGenerator;
         
-        public AuthService(IUserRepository repository, IHashGenerator hashGenerator, ITokenGenerator tokenGenerator)
+        public LoginService(IUserRepository repository, IHashGenerator hashGenerator, ITokenGenerator tokenGenerator)
         {
             _repository = repository;
             _hashGenerator = hashGenerator;

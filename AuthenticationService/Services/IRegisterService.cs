@@ -5,7 +5,7 @@ using Google.Apis.Auth;
 
 namespace AuthenticationService.Services
 {
-    public interface IUserService
+    public interface IRegisterService
     {
         Task<User> RegisterPassword(string username, string email, string password);
         Task<User> RegisterGoogle(string tokenId);
