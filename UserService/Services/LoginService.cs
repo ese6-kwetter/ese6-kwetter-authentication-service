@@ -21,9 +21,9 @@ namespace UserService.Services
             _tokenGenerator = tokenGenerator;
         }
         
-        public async Task<User> LoginPassword(string email, string password)
+        public async Task<User> LoginPasswordAsync(string email, string password)
         {
-            var user = await _repository.ReadByEmail(email);
+            var user = await _repository.ReadByEmailAsync(email);
 
             if (user == null)
                 throw new EmailNotFoundException();
@@ -36,7 +36,7 @@ namespace UserService.Services
             return user.WithoutPassword();
         }
 
-        public async Task<User> LoginGoogle(string tokenId)
+        public async Task<User> LoginGoogleAsync(string tokenId)
         {
             var payload = await GoogleJsonWebSignature.ValidateAsync(
                 tokenId, new GoogleJsonWebSignature.ValidationSettings()
@@ -45,7 +45,7 @@ namespace UserService.Services
             if (payload == null)
                 throw new GoogleAccountNotFoundException();
 
-            var user = await _repository.ReadByEmail(payload.Email);
+            var user = await _repository.ReadByEmailAsync(payload.Email);
             
             if (user == null)
                 throw new GoogleAccountNotFoundException();
@@ -55,7 +55,7 @@ namespace UserService.Services
             return user.WithoutPassword();
         }
 
-        public async Task<User> LoginApple(string tokenId)
+        public async Task<User> LoginAppleAsync(string tokenId)
         {
             throw new NotImplementedException();
         }

@@ -25,18 +25,18 @@ namespace UserService.Services
             _hashGenerator = hashGenerator;
         }
 
-        public async Task<User> RegisterPassword(string username, string email, string password)
+        public async Task<User> RegisterPasswordAsync(string username, string email, string password)
         {
-            if (await _repository.ReadByUsername(username) != null)
+            if (await _repository.ReadByUsernameAsync(username) != null)
                 throw new UsernameAlreadyExistsException();
 
-            if (await _repository.ReadByEmail(email) != null)
+            if (await _repository.ReadByEmailAsync(email) != null)
                 throw new EmailAlreadyExistsException();
 
             var salt = _hashGenerator.Salt();
             var hashedPassword = _hashGenerator.Hash(password, salt);
 
-            var user = await _repository.Create(new User
+            var user = await _repository.CreateAsync(new User
             {
                 Username = username,
                 Email = email,
@@ -48,14 +48,14 @@ namespace UserService.Services
             return user.WithoutPassword();
         }
 
-        public async Task<User> RegisterGoogle(string tokenId)
+        public async Task<User> RegisterGoogleAsync(string tokenId)
         {
             var payload = await GoogleJsonWebSignature.ValidateAsync(
                 tokenId, new GoogleJsonWebSignature.ValidationSettings()
             );
 
             // Check if user already exists
-            var user = await _repository.ReadByEmail(payload.Email);
+            var user = await _repository.ReadByEmailAsync(payload.Email);
             
             if (user != null)
             {
@@ -64,7 +64,7 @@ namespace UserService.Services
                 throw new EmailAlreadyExistsException();
             }
 
-            user = await _repository.Create(new User
+            user = await _repository.CreateAsync(new User
             {
                 Username = payload.Name,
                 Email = payload.Email,
@@ -75,7 +75,7 @@ namespace UserService.Services
             return user.WithoutPassword();
         }
 
-        public async Task<User> RegisterApple(string tokenId)
+        public async Task<User> RegisterAppleAsync(string tokenId)
         {
             throw new NotImplementedException();
         }

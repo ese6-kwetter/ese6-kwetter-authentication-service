@@ -46,13 +46,13 @@ namespace UserServiceTests.Services
                 Salt = salt,
             };
             
-            _repository.Setup(r => r.Create(user))
+            _repository.Setup(r => r.CreateAsync(user))
                 .ReturnsAsync(user);
 
             var service = new RegisterService(_repository.Object, _hashGenerator.Object);
 
             // Act
-            var result = await service.RegisterPassword(username, email, password);
+            var result = await service.RegisterPasswordAsync(username, email, password);
 
             // Assert
             Assert.IsNotNull(result);
@@ -78,14 +78,14 @@ namespace UserServiceTests.Services
                 Username = username,
                 Email = email,
                 Password = hashedPassword,
-                Salt = salt,
+                Salt = salt
             };
-            _repository.Setup(r => r.ReadByUsername(username)).ReturnsAsync(user);
+            _repository.Setup(r => r.ReadByUsernameAsync(username)).ReturnsAsync(user);
 
             var service = new RegisterService(_repository.Object, _hashGenerator.Object);
             
             // Assert
-            Assert.ThrowsAsync<UsernameAlreadyExistsException>(() => service.RegisterPassword(username, email, password));
+            Assert.ThrowsAsync<UsernameAlreadyExistsException>(() => service.RegisterPasswordAsync(username, email, password));
         }
 
         [Test]
@@ -109,12 +109,12 @@ namespace UserServiceTests.Services
                 Password = hashedPassword,
                 Salt = salt,
             };
-            _repository.Setup(r => r.ReadByEmail(email)).ReturnsAsync(user);
+            _repository.Setup(r => r.ReadByEmailAsync(email)).ReturnsAsync(user);
 
             var service = new RegisterService(_repository.Object, _hashGenerator.Object);
 
             // Assert
-            Assert.ThrowsAsync<EmailAlreadyExistsException>(() => service.RegisterPassword(username, email, password));
+            Assert.ThrowsAsync<EmailAlreadyExistsException>(() => service.RegisterPasswordAsync(username, email, password));
         }
     }
 }

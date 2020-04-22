@@ -8,6 +8,7 @@ using UserService.Helpers;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using UserService.Exceptions;
 using UserService.Models;
 using UserService.Services;
 
@@ -25,36 +26,60 @@ namespace UserService.Controllers
         }
 
         [HttpPost("password")]
-        public async Task<IActionResult> LoginPassword([FromBody] LoginModel model)
+        public async Task<IActionResult> LoginPasswordAsync([FromBody] LoginModel model)
         {
-            var user = await _service.LoginPassword(model.Email, model.Password);
+            try
+            {
+                var user = await _service.LoginPasswordAsync(model.Email, model.Password);
 
-            if (user == null)
-                return BadRequest();
-
-            return Ok(user);
+                return Ok(user);
+            }
+            catch (EmailNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         
         [HttpPost("google")]
-        public async Task<IActionResult> LoginGoogle([FromBody] LoginModel model)
+        public async Task<IActionResult> LoginGoogleAsync([FromBody] LoginModel model)
         {
-            var user = await _service.LoginGoogle(model.TokenId);
+            try
+            {
+                var user = await _service.LoginGoogleAsync(model.TokenId);
 
-            if (user == null)
-                return BadRequest();
-
-            return Ok(user);
+                return Ok(user);
+            }
+            catch (GoogleAccountNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         
         [HttpPost("apple")]
-        public async Task<IActionResult> LoginApple([FromBody] LoginModel model)
+        public async Task<IActionResult> LoginAppleAsync([FromBody] LoginModel model)
         {
-            var user = await _service.LoginApple(model.TokenId);
+            try
+            {
+                var user = await _service.LoginAppleAsync(model.TokenId);
 
-            if (user == null)
-                return BadRequest();
-
-            return Ok(user);
+                return Ok(user);
+            }
+            catch (AppleAccountNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

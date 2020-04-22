@@ -5,8 +5,8 @@ namespace UserService.Services
 {
     public interface ILoginService
     {
-        Task<User> LoginPassword(string email, string password);
-        Task<User> LoginGoogle(string tokenId);
-        Task<User> LoginApple(string tokenId);
+        Task<User> LoginPasswordAsync(string email, string password);
+        Task<User> LoginGoogleAsync(string tokenId);
+        Task<User> LoginAppleAsync(string tokenId);
     }
 }

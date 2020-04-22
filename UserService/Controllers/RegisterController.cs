@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using UserService.Exceptions;
 using UserService.Models;
 using UserService.Services;
 
@@ -17,36 +19,48 @@ namespace UserService.Controllers
         }
 
         [HttpPost("password")]
-        public async Task<IActionResult> RegisterPassword([FromBody] RegisterModel model)
+        public async Task<IActionResult> RegisterPasswordAsync([FromBody] RegisterModel model)
         {
-            var user = await _service.RegisterPassword(model.Username, model.Email, model.Password);
+            try
+            {
+                var user = await _service.RegisterPasswordAsync(model.Username, model.Email, model.Password);
 
-            if (user == null)
-                return BadRequest();
-
-            return Ok(user);
+                return Ok(user);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("google")]
-        public async Task<IActionResult> RegisterGoogle([FromBody] RegisterModel model)
+        public async Task<IActionResult> RegisterGoogleAsync([FromBody] RegisterModel model)
         {
-            var user = await _service.RegisterGoogle(model.TokenId);
+            try
+            {
+                var user = await _service.RegisterGoogleAsync(model.TokenId);
 
-            if (user == null)
-                return BadRequest();
-
-            return Ok(user);
+                return Ok(user);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("apple")]
-        public async Task<IActionResult> RegisterApple([FromBody] RegisterModel model)
+        public async Task<IActionResult> RegisterAppleAsync([FromBody] RegisterModel model)
         {
-            var user = await _service.RegisterApple(model.TokenId);
+            try
+            {
+                var user = await _service.RegisterAppleAsync(model.TokenId);
 
-            if (user == null)
-                return BadRequest();
-
-            return Ok(user);
+                return Ok(user);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

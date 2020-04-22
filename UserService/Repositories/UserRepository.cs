@@ -19,31 +19,31 @@ namespace UserService.Repositories
             _users = database.GetCollection<User>(settings.UserCollectionName);
         }
         
-        public async Task<User> Create(User user)
+        public async Task<User> CreateAsync(User user)
         {
             await _users.InsertOneAsync(user);
             return user;
         }
 
-        public async Task<List<User>> Read() =>
+        public async Task<List<User>> ReadAsync() =>
             await _users.Find(user => true).ToListAsync();
 
-        public async Task<User> Read(Guid id) =>
+        public async Task<User> ReadAsync(Guid id) =>
             await _users.Find(user => user.Id == id).FirstOrDefaultAsync();
         
-        public async Task<User> ReadByUsername(string username) =>
+        public async Task<User> ReadByUsernameAsync(string username) =>
             await _users.Find(user => user.Username == username).FirstOrDefaultAsync();
         
-        public async Task<User> ReadByEmail(string email) =>
+        public async Task<User> ReadByEmailAsync(string email) =>
             await _users.Find(user => user.Email == email).FirstOrDefaultAsync();
 
-        public async Task Update(Guid id, User userIn) =>
+        public async Task UpdateAsync(Guid id, User userIn) =>
             await _users.ReplaceOneAsync(user => user.Id == id, userIn);
 
-        public async Task Delete(User userIn) =>
+        public async Task DeleteAsync(User userIn) =>
             await _users.DeleteOneAsync(user => user.Id == userIn.Id);
 
-        public async Task Delete(Guid id) =>
+        public async Task DeleteAsync(Guid id) =>
             await _users.DeleteOneAsync(user => user.Id == id);
     }
 }
