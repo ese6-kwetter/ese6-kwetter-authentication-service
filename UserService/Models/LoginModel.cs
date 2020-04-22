@@ -1,0 +1,11 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace UserService.Models
+{
+    public class LoginModel
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string TokenId { get; set; }
+    }
+}
