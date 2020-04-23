@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using NUnit.Framework;
 using UserService.Entities;
 using UserService.Helpers;
-using NUnit.Framework;
 
 namespace UserServiceTests.Helpers
 {
@@ -16,7 +16,7 @@ namespace UserServiceTests.Helpers
             {
                 Username = "test",
                 Email = "test@test.com",
-                Password = new byte[] {0x20, 0x20, 0x20, 0x20},
+                Password = new byte[] {0x20, 0x20, 0x20, 0x20}
             };
 
             // Act
@@ -34,14 +34,12 @@ namespace UserServiceTests.Helpers
             // Arrange
             var users = new List<User>();
             for (var i = 0; i < 5; i++)
-            {
                 users.Add(new User
                 {
                     Username = "test",
                     Email = "test@test.com",
-                    Password = new byte[] {0x20, 0x20, 0x20, 0x20},
+                    Password = new byte[] {0x20, 0x20, 0x20, 0x20}
                 });
-            }
 
             // Act
             var result = users.WithoutSensitiveData();

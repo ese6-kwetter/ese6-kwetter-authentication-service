@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Google.Apis.Auth;
+﻿using System.Threading.Tasks;
 using UserService.Entities;
 
 namespace UserService.Services

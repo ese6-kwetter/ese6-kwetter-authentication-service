@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace UserService.Helpers
+﻿namespace UserService.Helpers
 {
     public interface IHashGenerator
     {

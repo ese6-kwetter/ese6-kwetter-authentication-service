@@ -96,7 +96,7 @@ namespace UserServiceTests.Helpers
         [Test]
         public void Salt_AreNotEqual_ReturnTrue()
         {
-            // Arrange
+            // Arrange and act
             var salt = _hashGenerator.Salt();
             var salt2 = _hashGenerator.Salt();
 
