@@ -85,7 +85,7 @@ namespace UserServiceTests.Controller
             
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(result.Value, new UsernameAlreadyExistsException().Message);
+            Assert.AreEqual(new UsernameAlreadyExistsException().Message, result.Value);
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace UserServiceTests.Controller
             
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(result.Value, new EmailAlreadyExistsException().Message);
+            Assert.AreEqual(new EmailAlreadyExistsException().Message, result.Value);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace UserService.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpPost("google")]
         public async Task<IActionResult> LoginGoogleAsync([FromBody] LoginModel model)
         {
@@ -62,7 +62,7 @@ namespace UserService.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         [HttpPost("apple")]
         public async Task<IActionResult> LoginAppleAsync([FromBody] LoginModel model)
         {

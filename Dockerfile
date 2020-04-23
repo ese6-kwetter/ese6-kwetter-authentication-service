@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY /out ./
 
-ENTRYPOINT ["dotnet", "AuthenticationService.dll"]
+ENTRYPOINT ["dotnet", "UserService.dll"]

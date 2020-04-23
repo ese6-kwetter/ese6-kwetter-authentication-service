@@ -27,7 +27,7 @@ namespace UserService.Controllers
 
                 return Ok(user);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -42,7 +42,7 @@ namespace UserService.Controllers
 
                 return Ok(user);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -57,7 +57,7 @@ namespace UserService.Controllers
 
                 return Ok(user);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

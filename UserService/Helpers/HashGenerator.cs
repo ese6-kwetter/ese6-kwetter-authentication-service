@@ -10,9 +10,9 @@ namespace UserService.Helpers
         {
             // Generate a 128-bit salt using a secure PRNG
             var salt = new byte[16];
-            
-            using (var rng = RandomNumberGenerator.Create())
-                rng.GetBytes(salt);
+
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(salt);
 
             return salt;
         }
