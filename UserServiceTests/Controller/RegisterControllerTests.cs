@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using UserService.Controllers;
 using UserService.Entities;
 using UserService.Exceptions;
+using UserService.Helpers;
 using UserService.Models;
 using UserService.Repositories;
 using UserService.Services;
@@ -23,14 +25,13 @@ namespace UserServiceTests.Controller
         }
 
         [Test]
-        public async Task RegisterPassword_UserWithPassword_ReturnUserWithoutPassword()
+        public async Task RegisterPassword_UserWithPassword_ReturnUser()
         {
             // Arrange
+            var id = Guid.NewGuid();
             const string username = "test";
             const string email = "test@test.com";
             const string password = "test";
-            var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
-            var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
             
             var registerModel = new RegisterModel()
             {
@@ -41,10 +42,9 @@ namespace UserServiceTests.Controller
             
             var user = new User
             {
+                Id = id,
                 Username = username,
-                Email = email,
-                Password = hashedPassword,
-                Salt = salt
+                Email = email
             };
             
             _service.Setup(s => s.RegisterPasswordAsync(username, email, password))

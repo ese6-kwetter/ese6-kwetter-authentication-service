@@ -45,7 +45,7 @@ namespace UserService.Services
                 OAuthIssuer = "none"
             });
 
-            return user.WithoutPassword();
+            return user.WithoutSensitiveData();
         }
 
         public async Task<User> RegisterGoogleAsync(string tokenId)
@@ -61,6 +61,7 @@ namespace UserService.Services
             {
                 if (user.OAuthIssuer == "Google")
                     throw new GoogleAccountAlreadyExistsException();
+                
                 throw new EmailAlreadyExistsException();
             }
 
@@ -72,7 +73,7 @@ namespace UserService.Services
                 OAuthSubject = payload.Subject
             });
 
-            return user.WithoutPassword();
+            return user.WithoutSensitiveData();
         }
 
         public async Task<User> RegisterAppleAsync(string tokenId)

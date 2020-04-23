@@ -33,7 +33,7 @@ namespace UserService.Services
 
             user.JwtToken = _tokenGenerator.GenerateJwt(user.Id);
             
-            return user.WithoutPassword();
+            return user.WithoutSensitiveData();
         }
 
         public async Task<User> LoginGoogleAsync(string tokenId)
@@ -52,7 +52,7 @@ namespace UserService.Services
 
             user.JwtToken = _tokenGenerator.GenerateJwt(user.Id);
 
-            return user.WithoutPassword();
+            return user.WithoutSensitiveData();
         }
 
         public async Task<User> LoginAppleAsync(string tokenId)

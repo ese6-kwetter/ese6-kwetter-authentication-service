@@ -20,7 +20,7 @@ namespace UserServiceTests.Helpers
             };
 
             // Act
-            var result = user.WithoutPassword();
+            var result = user.WithoutSensitiveData();
 
             // Assert
             Assert.IsNotNull(user.Username);
@@ -44,7 +44,7 @@ namespace UserServiceTests.Helpers
             }
 
             // Act
-            var result = users.WithoutPasswords();
+            var result = users.WithoutSensitiveData();
 
             // Assert
             foreach (var user in result)
