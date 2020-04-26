@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace UserServiceTests.Controller
+namespace UserServiceTests.Controllers
 {
     [TestFixture]
     public class LoginControllerTests

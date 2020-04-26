@@ -22,6 +22,7 @@ namespace UserService.Repositories
         public async Task<User> CreateAsync(User user)
         {
             await _users.InsertOneAsync(user);
+            
             return user;
         }
 

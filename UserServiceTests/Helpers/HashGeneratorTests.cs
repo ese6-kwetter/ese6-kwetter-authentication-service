@@ -16,7 +16,7 @@ namespace UserServiceTests.Helpers
         }
 
         [Test]
-        public void Hash_AreNotEqual_ReturnTrue()
+        public void Hash_AreNotEqual_ReturnsTrue()
         {
             // Arrange
             const string plainText = "test";
@@ -30,7 +30,7 @@ namespace UserServiceTests.Helpers
         }
         
         [Test]
-        public void Verify_ReturnTrue()
+        public void Verify_ReturnsTrue()
         {
             // Arrange
             const string plainText = "test";
@@ -45,7 +45,7 @@ namespace UserServiceTests.Helpers
         }
         
         [Test]
-        public void Verify_IncorrectString_ReturnFalse()
+        public void Verify_IncorrectString_ReturnsFalse()
         {
             // Arrange
             const string plainText = "test";
@@ -61,7 +61,7 @@ namespace UserServiceTests.Helpers
         }
         
         [Test]
-        public void Verify_IncorrectSalt_ReturnFalse()
+        public void Verify_IncorrectSalt_ReturnsFalse()
         {
             // Arrange
             const string plainText = "test";
@@ -77,7 +77,7 @@ namespace UserServiceTests.Helpers
         }
         
         [Test]
-        public void Verify_IncorrectStringAndSalt_ReturnFalse()
+        public void Verify_IncorrectStringAndSalt_ReturnsFalse()
         {
             // Arrange
             const string plainText = "test";
@@ -94,14 +94,13 @@ namespace UserServiceTests.Helpers
         }
 
         [Test]
-        public void Salt_AreNotEqual_ReturnTrue()
+        public void Salt_GeneratesSalt_ReturnsByteArray()
         {
             // Arrange and act
             var salt = _hashGenerator.Salt();
-            var salt2 = _hashGenerator.Salt();
 
             // Assert
-            Assert.AreNotEqual(salt, salt2);
+            Assert.IsInstanceOf<byte[]>(salt);
         }
     }
 }

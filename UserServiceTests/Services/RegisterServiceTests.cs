@@ -28,7 +28,7 @@ namespace UserServiceTests.Services
 
         [Test]
         [Ignore("The mocking of UserRepository.CreateAsync() returns null instead of a User")]
-        public async Task RegisterPassword_UserWithPassword_ReturnUserWithoutPassword()
+        public async Task RegisterPassword_UserWithPassword_ReturnsUserWithoutPassword()
         {
             // Arrange
             const string username = "test";
@@ -61,7 +61,7 @@ namespace UserServiceTests.Services
         }
 
         [Test]
-        public async Task RegisterPassword_ExistingUsername_ThrowUsernameAlreadyExistsException()
+        public async Task RegisterPassword_ExistingUsername_ThrowsUsernameAlreadyExistsException()
         {
             // Arrange
             const string username = "test";
@@ -91,7 +91,7 @@ namespace UserServiceTests.Services
         }
 
         [Test]
-        public async Task RegisterPassword_ExistingEmail_ThrowEmailAlreadyExistsException()
+        public async Task RegisterPassword_ExistingEmail_ThrowsEmailAlreadyExistsException()
         {
             // Arrange
             const string username = "test";

@@ -9,7 +9,7 @@ namespace UserServiceTests.Helpers
     public class ExtensionMethodsTests
     {
         [Test]
-        public void WithoutPassword_UserWithPassword_ReturnUserWithoutPassword()
+        public void WithoutPassword_UserWithPassword_ReturnsUserWithoutPassword()
         {
             // Arrange
             var user = new User
@@ -29,7 +29,7 @@ namespace UserServiceTests.Helpers
         }
 
         [Test]
-        public void WithoutPasswords_UsersWithPasswords_ReturnUsersWithoutPasswords()
+        public void WithoutPasswords_UsersWithPasswords_ReturnsUsersWithoutPasswords()
         {
             // Arrange
             var users = new List<User>();

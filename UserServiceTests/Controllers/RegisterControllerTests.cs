@@ -11,7 +11,7 @@ using UserService.Models;
 using UserService.Repositories;
 using UserService.Services;
 
-namespace UserServiceTests.Controller
+namespace UserServiceTests.Controllers
 {
     [TestFixture]
     public class RegisterControllerTests
@@ -25,7 +25,7 @@ namespace UserServiceTests.Controller
         }
 
         [Test]
-        public async Task RegisterPassword_UserWithPassword_ReturnUser()
+        public async Task RegisterPassword_UserWithPassword_ReturnsUser()
         {
             // Arrange
             var id = Guid.NewGuid();
@@ -61,7 +61,7 @@ namespace UserServiceTests.Controller
         }
 
         [Test]
-        public async Task RegisterPassword_UserWithExistingUsername_ReturnBadRequest()
+        public async Task RegisterPassword_UserWithExistingUsername_ReturnsBadRequest()
         {
             // Arrange
             const string username = "test";
@@ -89,7 +89,7 @@ namespace UserServiceTests.Controller
         }
 
         [Test]
-        public async Task RegisterPassword_UserWithExistingEmail_ReturnBadRequest()
+        public async Task RegisterPassword_UserWithExistingEmail_ReturnsBadRequest()
         {
             // Arrange
             const string username = "test";
