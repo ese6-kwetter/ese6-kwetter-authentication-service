@@ -25,7 +25,7 @@ namespace UserService.Repositories
         /// </summary>
         /// <param name="id">The guid to search for</param>
         /// <returns>User with the correct guid</returns>
-        Task<User> ReadAsync(Guid id);
+        Task<User> ReadByIdAsync(Guid id);
 
         /// <summary>
         ///     Gets a single user by their username

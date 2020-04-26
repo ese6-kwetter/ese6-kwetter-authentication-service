@@ -34,8 +34,8 @@ namespace UserServiceTests.Services
             const string username = "test";
             const string email = "test@test.com";
             const string password = "test";
-            var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
-            var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+            var salt = new byte[] { 0x20, 0x20, 0x20, 0x20 };
+            var hashedPassword = new byte[] { 0x20, 0x20, 0x20, 0x20 };
             
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt)).Returns(hashedPassword);
@@ -67,8 +67,8 @@ namespace UserServiceTests.Services
             const string username = "test";
             const string email = "test@test.com";
             const string password = "test";
-            var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
-            var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+            var salt = new byte[] { 0x20, 0x20, 0x20, 0x20 };
+            var hashedPassword = new byte[] { 0x20, 0x20, 0x20, 0x20 };
             
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt))
@@ -97,8 +97,8 @@ namespace UserServiceTests.Services
             const string username = "test";
             const string email = "test@test.com";
             const string password = "test";
-            var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
-            var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+            var salt = new byte[] { 0x20, 0x20, 0x20, 0x20 };
+            var hashedPassword = new byte[] { 0x20, 0x20, 0x20, 0x20 };
             
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt))

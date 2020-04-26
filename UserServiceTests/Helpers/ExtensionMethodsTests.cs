@@ -16,7 +16,7 @@ namespace UserServiceTests.Helpers
             {
                 Username = "test",
                 Email = "test@test.com",
-                Password = new byte[] {0x20, 0x20, 0x20, 0x20}
+                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 }
             };
 
             // Act
@@ -38,7 +38,7 @@ namespace UserServiceTests.Helpers
                 {
                     Username = "test",
                     Email = "test@test.com",
-                    Password = new byte[] {0x20, 0x20, 0x20, 0x20}
+                    Password = new byte[] { 0x20, 0x20, 0x20, 0x20 }
                 });
 
             // Act

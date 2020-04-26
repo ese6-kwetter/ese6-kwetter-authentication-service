@@ -29,7 +29,7 @@ namespace UserService.Repositories
         public async Task<List<User>> ReadAsync() =>
             await _users.Find(user => true).ToListAsync();
 
-        public async Task<User> ReadAsync(Guid id) =>
+        public async Task<User> ReadByIdAsync(Guid id) =>
             await _users.Find(user => user.Id == id).FirstOrDefaultAsync();
         
         public async Task<User> ReadByUsernameAsync(string username) =>

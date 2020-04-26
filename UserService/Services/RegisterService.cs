@@ -42,7 +42,6 @@ namespace UserService.Services
                 Email = email,
                 Password = hashedPassword,
                 Salt = salt,
-                OAuthIssuer = "none"
             });
 
             return user.WithoutSensitiveData();
