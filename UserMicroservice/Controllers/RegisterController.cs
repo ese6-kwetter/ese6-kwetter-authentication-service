@@ -10,6 +10,8 @@ namespace UserMicroservice.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [Produces(MediaTypeNames.Application.Json)]
     public class RegisterController : ControllerBase
     {
         private readonly IRegisterService _service;
@@ -18,10 +20,13 @@ namespace UserMicroservice.Controllers
         {
             _service = service;
         }
-
+        
+        /// <summary>
+        ///     Register a User with password.
+        /// </summary>
+        /// <param name="model">Registration credentials</param>
+        /// <returns>User without sensible data</returns>
         [HttpPost("password")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterPasswordAsync([FromBody] RegisterModel model)
@@ -37,10 +42,13 @@ namespace UserMicroservice.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        
+        /// <summary>
+        ///     Register a User with a Google account.
+        /// </summary>
+        /// <param name="model">Registration credentials</param>
+        /// <returns>User without sensible data</returns>
         [HttpPost("google")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterGoogleAsync([FromBody] RegisterModel model)
@@ -57,9 +65,12 @@ namespace UserMicroservice.Controllers
             }
         }
 
+        /// <summary>
+        ///     Register a User with a Apple account.
+        /// </summary>
+        /// <param name="model">Registration credentials</param>
+        /// <returns>User without sensible data</returns>
         [HttpPost("apple")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterAppleAsync([FromBody] RegisterModel model)
