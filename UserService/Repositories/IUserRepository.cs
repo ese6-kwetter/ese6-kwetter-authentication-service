@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MongoDB.Driver;
 using UserService.Entities;
 
 namespace UserService.Repositories
@@ -47,19 +48,19 @@ namespace UserService.Repositories
         /// <param name="id">Guid of the user</param>
         /// <param name="userIn">User with updated fields</param>
         /// <returns>Updated user</returns>
-        Task UpdateAsync(Guid id, User userIn);
+        Task<User> UpdateAsync(Guid id, User userIn);
 
         /// <summary>
         ///     Removes an user by their Guid
         /// </summary>
         /// <param name="id">Guid of the user to remove</param>
         /// <returns>Async task to await</returns>
-        Task DeleteAsync(Guid id);
+        Task DeleteByIdAsync(Guid id);
 
         /// <summary>
         ///     Removes an user
         /// </summary>
         /// <param name="userIn">User to remove</param>
-        Task DeleteAsync(User userIn);
+        Task DeleteByUserAsync(User userIn);
     }
 }

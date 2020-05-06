@@ -34,12 +34,12 @@ namespace UserServiceTests.Services
             const string username = "test";
             const string email = "test@test.com";
             const string password = "test";
-            var salt = new byte[] { 0x20, 0x20, 0x20, 0x20 };
-            var hashedPassword = new byte[] { 0x20, 0x20, 0x20, 0x20 };
-            
+            var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
+            var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt)).Returns(hashedPassword);
-            
+
             var user = new User
             {
                 Username = username,
@@ -47,7 +47,7 @@ namespace UserServiceTests.Services
                 Password = hashedPassword,
                 Salt = salt
             };
-            
+
             _repository.Setup(r => r.CreateAsync(user)).ReturnsAsync(user);
 
             var service = new RegisterService(_repository.Object, _hashGenerator.Object);
@@ -67,13 +67,13 @@ namespace UserServiceTests.Services
             const string username = "test";
             const string email = "test@test.com";
             const string password = "test";
-            var salt = new byte[] { 0x20, 0x20, 0x20, 0x20 };
-            var hashedPassword = new byte[] { 0x20, 0x20, 0x20, 0x20 };
-            
+            var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
+            var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt))
                 .Returns(hashedPassword);
-            
+
             var user = new User
             {
                 Username = username,
@@ -81,13 +81,15 @@ namespace UserServiceTests.Services
                 Password = hashedPassword,
                 Salt = salt
             };
-            
+
             _repository.Setup(r => r.ReadByUsernameAsync(username)).ReturnsAsync(user);
 
             var service = new RegisterService(_repository.Object, _hashGenerator.Object);
-            
+
             // Act and assert
-            Assert.ThrowsAsync<UsernameAlreadyExistsException>(() => service.RegisterPasswordAsync(username, email, password));
+            Assert.ThrowsAsync<UsernameAlreadyExistsException>(
+                () => service.RegisterPasswordAsync(username, email, password)
+            );
         }
 
         [Test]
@@ -97,13 +99,13 @@ namespace UserServiceTests.Services
             const string username = "test";
             const string email = "test@test.com";
             const string password = "test";
-            var salt = new byte[] { 0x20, 0x20, 0x20, 0x20 };
-            var hashedPassword = new byte[] { 0x20, 0x20, 0x20, 0x20 };
-            
+            var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
+            var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt))
                 .Returns(hashedPassword);
-            
+
             var user = new User
             {
                 Username = username,
@@ -111,13 +113,15 @@ namespace UserServiceTests.Services
                 Password = hashedPassword,
                 Salt = salt,
             };
-            
+
             _repository.Setup(r => r.ReadByEmailAsync(email)).ReturnsAsync(user);
 
             var service = new RegisterService(_repository.Object, _hashGenerator.Object);
 
             // Act and assert
-            Assert.ThrowsAsync<EmailAlreadyExistsException>(() => service.RegisterPasswordAsync(username, email, password));
+            Assert.ThrowsAsync<EmailAlreadyExistsException>(
+                () => service.RegisterPasswordAsync(username, email, password)
+            );
         }
     }
 }

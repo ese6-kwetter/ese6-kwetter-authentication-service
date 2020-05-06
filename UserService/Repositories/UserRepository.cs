@@ -38,13 +38,17 @@ namespace UserService.Repositories
         public async Task<User> ReadByEmailAsync(string email) =>
             await _users.Find(user => user.Email == email).FirstOrDefaultAsync();
 
-        public async Task UpdateAsync(Guid id, User userIn) =>
+        public async Task<User> UpdateAsync(Guid id, User userIn)
+        {
             await _users.ReplaceOneAsync(user => user.Id == id, userIn);
+            
+            return await ReadByIdAsync(id);
+        }
 
-        public async Task DeleteAsync(User userIn) =>
-            await _users.DeleteOneAsync(user => user.Id == userIn.Id);
-
-        public async Task DeleteAsync(Guid id) =>
+        public async Task DeleteByIdAsync(Guid id) =>
             await _users.DeleteOneAsync(user => user.Id == id);
+
+        public async Task DeleteByUserAsync(User userIn) =>
+            await _users.DeleteOneAsync(user => user.Id == userIn.Id);
     }
 }

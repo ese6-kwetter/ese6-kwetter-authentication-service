@@ -107,7 +107,7 @@ namespace UserServiceTests.Repositories
         }
 
         [Test]
-        public async Task ReadByIdAsync_CreateUserInDatabase_ReturnsUser()
+        public async Task ReadByIdAsync_UsersInDatabase_ReturnsUser()
         {
             // Arrange
             var user1 = new User
@@ -135,6 +135,196 @@ namespace UserServiceTests.Repositories
             // Assert
             Assert.AreEqual(user1.Id, result.Id);
             Assert.AreNotEqual(user2.Id, result.Id);
+        }
+
+        [Test]
+        public async Task ReadByIdAsync_NoUsersInDatabase_ReturnsNull()
+        {
+            // Arrange
+            var user1 = new User
+            {
+                Username = "test1",
+                Email = "test1@test.com",
+                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
+                Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
+            };
+            
+            // Act
+            var result = await _repository.ReadByIdAsync(user1.Id);
+            
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public async Task ReadByUsernameAsync_UsersInDatabase_ReturnsUser()
+        {
+            // Arrange
+            var user1 = new User
+            {
+                Username = "test1",
+                Email = "test1@test.com",
+                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
+                Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
+            };
+            
+            var user2 = new User
+            {
+                Username = "test2",
+                Email = "test2@test.com",
+                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
+                Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
+            };
+
+            await _repository.CreateAsync(user1);
+            await _repository.CreateAsync(user2);
+            
+            // Act
+            var result = await _repository.ReadByUsernameAsync(user1.Username);
+            
+            // Assert
+            Assert.AreEqual(user1.Id, result.Id);
+            Assert.AreNotEqual(user2.Id, result.Id);
+        }
+
+        [Test]
+        public async Task ReadByUsernameAsync_NoUsersInDatabase_ReturnsNull()
+        {
+            // Arrange
+            var user1 = new User
+            {
+                Username = "test1",
+                Email = "test1@test.com",
+                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
+                Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
+            };
+            
+            // Act
+            var result = await _repository.ReadByUsernameAsync(user1.Username);
+            
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public async Task ReadByEmailAsync_UsersInDatabase_ReturnsUser()
+        {
+            // Arrange
+            var user1 = new User
+            {
+                Username = "test1",
+                Email = "test1@test.com",
+                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
+                Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
+            };
+            
+            var user2 = new User
+            {
+                Username = "test2",
+                Email = "test2@test.com",
+                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
+                Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
+            };
+
+            await _repository.CreateAsync(user1);
+            await _repository.CreateAsync(user2);
+            
+            // Act
+            var result = await _repository.ReadByEmailAsync(user1.Email);
+            
+            // Assert
+            Assert.AreEqual(user1.Id, result.Id);
+            Assert.AreNotEqual(user2.Id, result.Id);
+        }
+
+        [Test]
+        public async Task ReadByEmailAsync_NoUsersInDatabase_ReturnsNull()
+        {
+            // Arrange
+            var user1 = new User
+            {
+                Username = "test",
+                Email = "test@test.com",
+                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
+                Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
+            };
+            
+            // Act
+            var result = await _repository.ReadByEmailAsync(user1.Email);
+            
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public async Task UpdateAsync_UserInDatabase_ReturnsUser()
+        {
+            // Arrange
+            const string username = "test1";
+            const string email = "test1@test.com";
+            var user = new User
+            {
+                Username = "test",
+                Email = "test@test.com",
+                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
+                Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
+            };
+
+            user = await _repository.CreateAsync(user);
+            
+            // Act
+            user.Username = username;
+            user.Email = email;
+            
+            var result = await _repository.UpdateAsync(user.Id, user);
+            
+            // Assert
+            Assert.AreEqual(username, result.Username);
+            Assert.AreEqual(email, result.Email);
+        }
+
+        [Test]
+        public async Task DeleteByIdAsync_UserInDatabase_ReturnsNull()
+        {
+            // Arrange
+            var user = new User
+            {
+                Username = "test",
+                Email = "test@test.com",
+                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
+                Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
+            };
+
+            user = await _repository.CreateAsync(user);
+            
+            // Act
+            await _repository.DeleteByIdAsync(user.Id);
+            var result = await _repository.ReadByIdAsync(user.Id);
+            
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public async Task DeleteByUserAsync_UserInDatabase_ReturnsNull()
+        {
+            // Arrange
+            var user = new User
+            {
+                Username = "test",
+                Email = "test@test.com",
+                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
+                Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
+            };
+
+            user = await _repository.CreateAsync(user);
+            
+            // Act
+            await _repository.DeleteByUserAsync(user);
+            var result = await _repository.ReadByIdAsync(user.Id);
+            
+            // Assert
+            Assert.IsNull(result);
         }
     }
 }
