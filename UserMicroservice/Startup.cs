@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using UserMicroservice.Helpers;
 using UserMicroservice.Repositories;
 using UserMicroservice.Services;
@@ -25,6 +27,12 @@ namespace UserMicroservice
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Swagger.io
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo {Title = "Values Api", Version = "v1"});
+            });
+            
             services.AddCors();
             services.AddControllers();
 
@@ -41,10 +49,10 @@ namespace UserMicroservice
                 sp.GetRequiredService<IOptions<UserDatabaseSettings>>().Value);
 
             // Configure strongly typed settings objects
-            var appSettingsSection = Configuration.GetSection("AppSettings");
+            var appSettingsSection = Configuration.GetSection(nameof(AppSettings));
             services.Configure<AppSettings>(appSettingsSection);
 
-            // Configure jwt authentication
+            // Configure JWT authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.JwtSecret);
             services.AddAuthentication(options =>
@@ -76,9 +84,19 @@ namespace UserMicroservice
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                // Swagger.io
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "User Microservice");
+                });
+            }
+            
             app.UseRouting();
 
-            // Global cors policy
+            // Global CORS policy
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
