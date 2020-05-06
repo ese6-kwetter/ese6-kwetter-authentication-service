@@ -1,12 +1,16 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Net.Mime;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using UserMicroservice.Entities;
 using UserMicroservice.Helpers;
 using Google.Apis.Auth;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using UserMicroservice.Exceptions;
 using UserMicroservice.Models;
@@ -26,6 +30,11 @@ namespace UserMicroservice.Controllers
         }
 
         [HttpPost("password")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> LoginPasswordAsync([FromBody] LoginModel model)
         {
             try
@@ -45,6 +54,11 @@ namespace UserMicroservice.Controllers
         }
 
         [HttpPost("google")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> LoginGoogleAsync([FromBody] LoginModel model)
         {
             try
@@ -64,6 +78,11 @@ namespace UserMicroservice.Controllers
         }
 
         [HttpPost("apple")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> LoginAppleAsync([FromBody] LoginModel model)
         {
             try

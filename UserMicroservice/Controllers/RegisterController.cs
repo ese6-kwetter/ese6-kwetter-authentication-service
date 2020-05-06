@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net.Mime;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UserMicroservice.Models;
 using UserMicroservice.Services;
@@ -18,6 +20,10 @@ namespace UserMicroservice.Controllers
         }
 
         [HttpPost("password")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterPasswordAsync([FromBody] RegisterModel model)
         {
             try
@@ -33,6 +39,10 @@ namespace UserMicroservice.Controllers
         }
 
         [HttpPost("google")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterGoogleAsync([FromBody] RegisterModel model)
         {
             try
@@ -48,6 +58,10 @@ namespace UserMicroservice.Controllers
         }
 
         [HttpPost("apple")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterAppleAsync([FromBody] RegisterModel model)
         {
             try
