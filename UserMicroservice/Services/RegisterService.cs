@@ -1,12 +1,6 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Authentication;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using Google.Apis.Auth;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using UserMicroservice.Entities;
 using UserMicroservice.Exceptions;
 using UserMicroservice.Helpers;
@@ -49,18 +43,18 @@ namespace UserMicroservice.Services
 
         public async Task<User> RegisterGoogleAsync(string tokenId)
         {
-            var payload = await GoogleJsonWebSignature.ValidateAsync(
-                tokenId, new GoogleJsonWebSignature.ValidationSettings()
-            );
+            var payload =
+                await GoogleJsonWebSignature.ValidateAsync(tokenId, new GoogleJsonWebSignature.ValidationSettings())
+                ?? throw new GoogleAccountNotFoundException();
 
             // Check if user already exists
             var user = await _repository.ReadByEmailAsync(payload.Email);
-            
+
             if (user != null)
             {
                 if (user.OAuthIssuer == "Google")
                     throw new GoogleAccountAlreadyExistsException();
-                
+
                 throw new EmailAlreadyExistsException();
             }
 

@@ -34,10 +34,10 @@ namespace UserMicroserviceTests.Services
             const string password = "password";
             var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
-            const string jwtToken = "jwttoken";
+            const string jwt = "jwt";
 
             _hashGenerator.Setup(h => h.Verify(password, salt, hashedPassword)).Returns(true);
-            _tokenGenerator.Setup(t => t.GenerateJwt(id)).Returns(jwtToken);
+            _tokenGenerator.Setup(t => t.GenerateJwt(id)).Returns(jwt);
 
             var user = new User
             {
@@ -56,7 +56,7 @@ namespace UserMicroserviceTests.Services
             
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(jwtToken, result.JwtToken);
+            Assert.AreEqual(jwt, result.Jwt);
         }
 
         [Test]

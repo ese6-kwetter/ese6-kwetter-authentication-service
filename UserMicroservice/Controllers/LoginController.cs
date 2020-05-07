@@ -1,17 +1,8 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Net.Mime;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using UserMicroservice.Entities;
-using UserMicroservice.Helpers;
-using Google.Apis.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.IdentityModel.Tokens;
 using UserMicroservice.Exceptions;
 using UserMicroservice.Models;
 using UserMicroservice.Services;
@@ -44,9 +35,7 @@ namespace UserMicroservice.Controllers
         {
             try
             {
-                var user = await _service.LoginPasswordAsync(model.Email, model.Password);
-
-                return Ok(user);
+                return Ok(await _service.LoginPasswordAsync(model.Email, model.Password));
             }
             catch (EmailNotFoundException ex)
             {
@@ -71,9 +60,7 @@ namespace UserMicroservice.Controllers
         {
             try
             {
-                var user = await _service.LoginGoogleAsync(model.TokenId);
-
-                return Ok(user);
+                return Ok(await _service.LoginGoogleAsync(model.TokenId));
             }
             catch (GoogleAccountNotFoundException ex)
             {
@@ -98,9 +85,7 @@ namespace UserMicroservice.Controllers
         {
             try
             {
-                var user = await _service.LoginAppleAsync(model.TokenId);
-
-                return Ok(user);
+                return Ok(await _service.LoginAppleAsync(model.TokenId));
             }
             catch (AppleAccountNotFoundException ex)
             {

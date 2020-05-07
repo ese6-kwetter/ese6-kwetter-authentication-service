@@ -3,6 +3,7 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UserMicroservice.Exceptions;
 using UserMicroservice.Models;
 using UserMicroservice.Services;
 
@@ -33,9 +34,7 @@ namespace UserMicroservice.Controllers
         {
             try
             {
-                var user = await _service.RegisterPasswordAsync(model.Username, model.Email, model.Password);
-
-                return Ok(user);
+                return Ok(await _service.RegisterPasswordAsync(model.Username, model.Email, model.Password));
             }
             catch (Exception ex)
             {
@@ -55,9 +54,11 @@ namespace UserMicroservice.Controllers
         {
             try
             {
-                var user = await _service.RegisterGoogleAsync(model.TokenId);
-
-                return Ok(user);
+                return Ok(await _service.RegisterGoogleAsync(model.TokenId));
+            }
+            catch (GoogleAccountNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
@@ -77,9 +78,11 @@ namespace UserMicroservice.Controllers
         {
             try
             {
-                var user = await _service.RegisterAppleAsync(model.TokenId);
-
-                return Ok(user);
+                return Ok(await _service.RegisterAppleAsync(model.TokenId));
+            }
+            catch (AppleAccountNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {

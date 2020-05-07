@@ -42,7 +42,7 @@ namespace UserMicroservice.Repositories
         {
             await _users.ReplaceOneAsync(user => user.Id == id, userIn);
             
-            return await ReadByIdAsync(id);
+            return await _users.Find(user => user.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task DeleteByIdAsync(Guid id) =>
