@@ -28,12 +28,12 @@ namespace UserMicroserviceTests.Services
 
         [Test]
         [Ignore("The mocking of UserRepository.CreateAsync() returns null instead of a User")]
-        public async Task RegisterPassword_UserWithPassword_ReturnsUserWithoutPassword()
+        public async Task RegisterPasswordAsync_UserWithPassword_ReturnsUserWithoutSensitiveData()
         {
             // Arrange
-            const string username = "test";
+            const string username = "username";
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
 
@@ -61,12 +61,12 @@ namespace UserMicroserviceTests.Services
         }
 
         [Test]
-        public async Task RegisterPassword_ExistingUsername_ThrowsUsernameAlreadyExistsException()
+        public async Task RegisterPasswordAsync_ExistingUsername_ThrowsUsernameAlreadyExistsException()
         {
             // Arrange
-            const string username = "test";
+            const string username = "username";
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
 
@@ -93,12 +93,12 @@ namespace UserMicroserviceTests.Services
         }
 
         [Test]
-        public async Task RegisterPassword_ExistingEmail_ThrowsEmailAlreadyExistsException()
+        public async Task RegisterPasswordAsync_ExistingEmail_ThrowsEmailAlreadyExistsException()
         {
             // Arrange
-            const string username = "test";
+            const string username = "username";
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
 

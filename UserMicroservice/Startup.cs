@@ -64,6 +64,7 @@ namespace UserMicroservice
             
             services.AddCors();
             services.AddControllers();
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             // Configure DI for application services
             services.AddTransient<ILoginService, LoginService>();

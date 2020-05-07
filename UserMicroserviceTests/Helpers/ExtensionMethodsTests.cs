@@ -12,19 +12,23 @@ namespace UserMicroserviceTests.Helpers
         public void WithoutPassword_UserWithPassword_ReturnsUserWithoutPassword()
         {
             // Arrange
+            const string username = "username";
+            const string email = "test@test.com";
+            var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+            
             var user = new User
             {
-                Username = "test",
-                Email = "test@test.com",
-                Password = new byte[] { 0x20, 0x20, 0x20, 0x20 }
+                Username = username,
+                Email = email,
+                Password = hashedPassword
             };
 
             // Act
             var result = user.WithoutSensitiveData();
 
             // Assert
-            Assert.IsNotNull(user.Username);
-            Assert.IsNotNull(user.Email);
+            Assert.AreEqual(username, result.Username);
+            Assert.AreEqual(email, result.Email);
             Assert.IsNull(user.Password);
         }
 
@@ -32,24 +36,31 @@ namespace UserMicroserviceTests.Helpers
         public void WithoutPasswords_UsersWithPasswords_ReturnsUsersWithoutPasswords()
         {
             // Arrange
+            const string username = "username";
+            const string email = "test@test.com";
+            var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+            
+            var user = new User
+            {
+                Username = username,
+                Email = email,
+                Password = hashedPassword
+            };
+            
             var users = new List<User>();
+            
             for (var i = 0; i < 5; i++)
-                users.Add(new User
-                {
-                    Username = "test",
-                    Email = "test@test.com",
-                    Password = new byte[] { 0x20, 0x20, 0x20, 0x20 }
-                });
+                users.Add(user);
 
             // Act
             var result = users.WithoutSensitiveData();
 
             // Assert
-            foreach (var user in result)
+            foreach (var r in result)
             {
-                Assert.IsNotNull(user.Username);
-                Assert.IsNotNull(user.Email);
-                Assert.IsNull(user.Password);
+                Assert.AreEqual(username, r.Username);
+                Assert.AreEqual(email, r.Email);
+                Assert.IsNull(r.Password);
             }
         }
     }

@@ -29,9 +29,9 @@ namespace UserMicroserviceTests.Controllers
         {
             // Arrange
             var id = Guid.NewGuid();
-            const string username = "test";
+            const string username = "username";
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             
             var registerModel = new RegisterModel()
             {
@@ -64,9 +64,9 @@ namespace UserMicroserviceTests.Controllers
         public async Task RegisterPassword_UserWithExistingUsername_ReturnsBadRequest()
         {
             // Arrange
-            const string username = "test";
+            const string username = "username";
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             
             var registerModel = new RegisterModel()
             {
@@ -92,9 +92,9 @@ namespace UserMicroserviceTests.Controllers
         public async Task RegisterPassword_UserWithExistingEmail_ReturnsBadRequest()
         {
             // Arrange
-            const string username = "test";
+            const string username = "username";
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             
             var registerModel = new RegisterModel()
             {
