@@ -27,10 +27,10 @@ namespace UserMicroserviceTests.Controllers
         {
             // Arrange
             var id = Guid.NewGuid();
-            const string username = "test";
+            const string username = "username";
             const string email = "test@test.com";
-            const string password = "test";
-            const string jwtToken = "test";
+            const string password = "password";
+            const string jwtToken = "jwtToken";
             
             var loginModel = new LoginModel()
             {
@@ -64,7 +64,7 @@ namespace UserMicroserviceTests.Controllers
         {
             // Arrange
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             
             var loginModel = new LoginModel()
             {
@@ -90,7 +90,7 @@ namespace UserMicroserviceTests.Controllers
         {
             // Arrange
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             
             var loginModel = new LoginModel()
             {
