@@ -72,6 +72,7 @@ namespace UserMicroservice
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IHashGenerator, HashGenerator>();
             services.AddTransient<ITokenGenerator, TokenGenerator>();
+            services.AddTransient<IRegexValidator, RegexValidator>();
 
             // Configure Database Settings
             services.Configure<UserDatabaseSettings>(Configuration.GetSection(nameof(UserDatabaseSettings)));

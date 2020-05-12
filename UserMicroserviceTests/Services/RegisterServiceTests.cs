@@ -18,12 +18,14 @@ namespace UserMicroserviceTests.Services
     {
         private Mock<IUserRepository> _repository;
         private Mock<IHashGenerator> _hashGenerator;
+        private Mock<IRegexValidator> _regexValidator;
 
         [SetUp]
         public void SetUp()
         {
             _repository = new Mock<IUserRepository>();
             _hashGenerator = new Mock<IHashGenerator>();
+            _regexValidator = new Mock<IRegexValidator>();
         }
 
         [Test]
@@ -50,7 +52,7 @@ namespace UserMicroserviceTests.Services
 
             _repository.Setup(r => r.CreateAsync(user)).ReturnsAsync(user);
 
-            var service = new RegisterService(_repository.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object);
 
             // Act
             var result = await service.RegisterPasswordAsync(username, email, password);
@@ -84,7 +86,7 @@ namespace UserMicroserviceTests.Services
 
             _repository.Setup(r => r.ReadByUsernameAsync(username)).ReturnsAsync(user);
 
-            var service = new RegisterService(_repository.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object);
 
             // Act and assert
             Assert.ThrowsAsync<UsernameAlreadyExistsException>(
@@ -116,7 +118,7 @@ namespace UserMicroserviceTests.Services
 
             _repository.Setup(r => r.ReadByEmailAsync(email)).ReturnsAsync(user);
 
-            var service = new RegisterService(_repository.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object);
 
             // Act and assert
             Assert.ThrowsAsync<EmailAlreadyExistsException>(

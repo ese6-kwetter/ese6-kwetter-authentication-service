@@ -11,16 +11,24 @@ namespace UserMicroservice.Services
     public class RegisterService : IRegisterService
     {
         private readonly IUserRepository _repository;
+        private readonly IRegexValidator _regexValidator;
         private readonly IHashGenerator _hashGenerator;
         
-        public RegisterService(IUserRepository repository, IHashGenerator hashGenerator)
+        public RegisterService(IUserRepository repository, IRegexValidator regexValidator, IHashGenerator hashGenerator)
         {
             _repository = repository;
+            _regexValidator = regexValidator;
             _hashGenerator = hashGenerator;
         }
 
         public async Task<User> RegisterPasswordAsync(string username, string email, string password)
         {
+            if (!_regexValidator.IsValidEmail(email))
+                throw new InvalidEmailException();
+            
+            if (!_regexValidator.IsValidPassword(password))
+                throw new InvalidPasswordException();
+                
             if (await _repository.ReadByUsernameAsync(username) != null)
                 throw new UsernameAlreadyExistsException();
 
