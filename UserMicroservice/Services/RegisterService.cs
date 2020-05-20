@@ -53,7 +53,7 @@ namespace UserMicroservice.Services
         {
             var payload =
                 await GoogleJsonWebSignature.ValidateAsync(tokenId, new GoogleJsonWebSignature.ValidationSettings())
-                ?? throw new GoogleAccountNotFoundException();
+                ?? throw new AccountNotFoundException();
 
             // Check if user already exists
             var user = await _repository.ReadByEmailAsync(payload.Email);
@@ -61,7 +61,7 @@ namespace UserMicroservice.Services
             if (user != null)
             {
                 if (user.OAuthIssuer == "Google")
-                    throw new GoogleAccountAlreadyExistsException();
+                    throw new AccountAlreadyExistsException();
 
                 throw new EmailAlreadyExistsException();
             }

@@ -102,7 +102,7 @@ namespace UserMicroserviceTests.Services
             var service = new LoginService(_repository.Object, _hashGenerator.Object, _tokenGenerator.Object);
             
             // Act and assert
-            Assert.ThrowsAsync<IncorrectPasswordException>(() => service.LoginPasswordAsync(email, password));
+            Assert.ThrowsAsync<InvalidPasswordException>(() => service.LoginPasswordAsync(email, password));
         }
     }
 }

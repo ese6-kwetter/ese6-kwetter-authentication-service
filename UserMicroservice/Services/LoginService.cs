@@ -27,7 +27,7 @@ namespace UserMicroservice.Services
                 ?? throw new EmailNotFoundException();
             
             if (!_hashGenerator.Verify(password, user.Salt, user.Password))
-                throw new IncorrectPasswordException();
+                throw new InvalidPasswordException();
 
             user.Jwt = _tokenGenerator.GenerateJwt(user.Id);
             
@@ -38,10 +38,10 @@ namespace UserMicroservice.Services
         {
             var payload =
                 await GoogleJsonWebSignature.ValidateAsync(tokenId, new GoogleJsonWebSignature.ValidationSettings())
-                ?? throw new GoogleAccountNotFoundException();
+                ?? throw new AccountNotFoundException();
 
             var user = await _repository.ReadByEmailAsync(payload.Email)
-                ?? throw new GoogleAccountNotFoundException();
+                ?? throw new AccountNotFoundException();
 
             user.Jwt = _tokenGenerator.GenerateJwt(user.Id);
 

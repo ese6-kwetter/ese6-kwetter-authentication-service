@@ -38,6 +38,9 @@ namespace UserMicroserviceTests.Services
             const string password = "password";
             var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+            
+            _regexValidator.Setup(r => r.IsValidEmail(email)).Returns(true);
+            _regexValidator.Setup(r => r.IsValidPassword(password)).Returns(true);
 
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt)).Returns(hashedPassword);
@@ -71,6 +74,9 @@ namespace UserMicroserviceTests.Services
             const string password = "password";
             var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+            
+            _regexValidator.Setup(r => r.IsValidEmail(email)).Returns(true);
+            _regexValidator.Setup(r => r.IsValidPassword(password)).Returns(true);
 
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt))
@@ -103,6 +109,9 @@ namespace UserMicroserviceTests.Services
             const string password = "password";
             var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+
+            _regexValidator.Setup(r => r.IsValidEmail(email)).Returns(true);
+            _regexValidator.Setup(r => r.IsValidPassword(password)).Returns(true);
 
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt))

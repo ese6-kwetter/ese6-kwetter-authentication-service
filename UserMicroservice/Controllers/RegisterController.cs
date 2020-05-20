@@ -56,7 +56,7 @@ namespace UserMicroservice.Controllers
             {
                 return Ok(await _service.RegisterGoogleAsync(model.TokenId));
             }
-            catch (GoogleAccountNotFoundException ex)
+            catch (AccountNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
@@ -80,7 +80,7 @@ namespace UserMicroservice.Controllers
             {
                 return Ok(await _service.RegisterAppleAsync(model.TokenId));
             }
-            catch (AppleAccountNotFoundException ex)
+            catch (AccountNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }

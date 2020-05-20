@@ -57,11 +57,12 @@ namespace UserMicroserviceTests.Controllers
             
             // Assert
             Assert.IsNotNull(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
             Assert.AreEqual(user, result.Value);
         }
 
         [Test]
-        public async Task RegisterPassword_UserWithExistingUsername_ReturnsBadRequest()
+        public async Task RegisterPassword_UserWithExistingUsername_ReturnsBadRequestObjectResult()
         {
             // Arrange
             const string username = "username";
@@ -84,12 +85,11 @@ namespace UserMicroserviceTests.Controllers
             var result = await controller.RegisterPasswordAsync(registerModel) as ObjectResult;
             
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(new UsernameAlreadyExistsException().Message, result.Value);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
 
         [Test]
-        public async Task RegisterPassword_UserWithExistingEmail_ReturnsBadRequest()
+        public async Task RegisterPassword_UserWithExistingEmail_ReturnsBadRequestObjectResult()
         {
             // Arrange
             const string username = "username";
@@ -112,8 +112,7 @@ namespace UserMicroserviceTests.Controllers
             var result = await controller.RegisterPasswordAsync(registerModel) as ObjectResult;
             
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(new EmailAlreadyExistsException().Message, result.Value);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
     }
 }
