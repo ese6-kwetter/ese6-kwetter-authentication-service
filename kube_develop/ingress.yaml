@@ -25,4 +25,4 @@ spec:
 status:
   loadBalancer:
     ingress:
-     - ip: 207.180.252.77
+     - ip: 207.180.245.152
