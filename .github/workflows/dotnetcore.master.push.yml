@@ -11,27 +11,40 @@ jobs:
       image: mcr.microsoft.com/dotnet/core/sdk:3.1.201-bionic
     steps:
       - uses: actions/checkout@v2
+      
       - name: Decrypt the GPG encrypted config files
-        run: gpg --quiet --batch --yes --passphrase="${{ secrets.GPG_PASSPHRASE }}" --output ./UserMicroservice/appsettings.json --decrypt ./UserMicroservice/appsettings.json.gpg
+        run: gpg --quiet --batch --yes --passphrase ${{ secrets.GPG_PASSPHRASE }} --output ./UserMicroservice/appsettings.json --decrypt ./UserMicroservice/appsettings.json.gpg
+      
       - name: Install dependencies
         run: dotnet restore
+      
       - name: Build
         run: dotnet build
+      
       - name: Test
         run: dotnet test
+      
       - name: Publish
         run: dotnet publish -c Release -o out
+      
       - name: Upload release artifact
         uses: actions/upload-artifact@v1
         with:
           name: release-artifact
           path: ./out
+      
       - name: Upload Dockerfile artifact
         uses: actions/upload-artifact@v1
         with:
           name: dockerfile-artifact
           path: ./Dockerfile
-  delivery:
+
+      - name: Upload Kubernetes artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: kubernetes-artifact
+          path: ./kube_master
+  deliver:
     needs: build
     runs-on: ubuntu-18.04
     steps:
@@ -40,11 +53,13 @@ jobs:
         with:
           name: release-artifact
           path: ./out
+      
       - name: Download Dockerfile artifact
         uses: actions/download-artifact@v1
         with:
           name: dockerfile-artifact
           path: .
+      
       - name: Deliver Docker image
         env:
           CONTAINER_IMAGE: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
@@ -54,3 +69,35 @@ jobs:
           docker build -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
           docker push $CONTAINER_IMAGE
           docker push $CONTAINER_IMAGE_LATEST
+  
+  deploy:
+    needs: deliver
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Download Kubernetes artifact
+        uses: actions/download-artifact@v1
+        with:
+            name: kubernetes-artifact
+            path: ./kube_master
+      
+      - name: Setup Kubectl
+        uses: azure/setup-kubectl@v1
+
+      - name: Set context via kubeconfig
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+      
+      - name: Deploy Kubernetes with manifests
+        uses: azure/k8s-deploy@v1
+        with:
+            namespace: dwetter-master
+            manifests: |
+              ./kube/certificate.yaml
+              ./kube/deployment.yaml
+              ./kube/ingress.yaml
+              ./kube/service.yaml
+              ./kube/autoscaler.yaml
+            images: |
+              ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
