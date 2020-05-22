@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace UserMicroservice.Entities
@@ -10,7 +10,7 @@ namespace UserMicroservice.Entities
         public string Email { get; set; }
         public byte[] Password { get; set; }
         public byte[] Salt { get; set; }
-        public string JwtToken { get; set; }
+        public string Jwt { get; set; }
         public string OAuthSubject { get; set; }
         public string OAuthIssuer { get; set; }
     }

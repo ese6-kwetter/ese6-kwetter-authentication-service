@@ -27,10 +27,10 @@ namespace UserMicroserviceTests.Controllers
         {
             // Arrange
             var id = Guid.NewGuid();
-            const string username = "test";
+            const string username = "username";
             const string email = "test@test.com";
-            const string password = "test";
-            const string jwtToken = "test";
+            const string password = "password";
+            const string jwt = "jwt";
             
             var loginModel = new LoginModel()
             {
@@ -43,7 +43,7 @@ namespace UserMicroserviceTests.Controllers
                 Id = id,
                 Username = username,
                 Email = email,
-                JwtToken = jwtToken
+                Jwt = jwt
             };
             
             _service.Setup(s => s.LoginPasswordAsync(email, password))
@@ -56,15 +56,16 @@ namespace UserMicroserviceTests.Controllers
             
             // Assert
             Assert.IsNotNull(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
             Assert.AreEqual(user, result.Value);
         }
         
         [Test]
-        public async Task LoginPassword_WrongEmailWithPassword_ReturnsEmailNotFoundException()
+        public async Task LoginPassword_WrongEmailWithPassword_ReturnsNotFoundObjectResult()
         {
             // Arrange
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             
             var loginModel = new LoginModel()
             {
@@ -81,16 +82,15 @@ namespace UserMicroserviceTests.Controllers
             var result = await controller.LoginPasswordAsync(loginModel) as ObjectResult;
             
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(new EmailNotFoundException().Message, result.Value);
+            Assert.IsInstanceOf<NotFoundObjectResult>(result);
         }
         
         [Test]
-        public async Task LoginPassword_EmailWithWrongPassword_ReturnsIncorrectPasswordException()
+        public async Task LoginPassword_EmailWithWrongPassword_ReturnsBadRequestObjectResult()
         {
             // Arrange
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             
             var loginModel = new LoginModel()
             {
@@ -99,7 +99,7 @@ namespace UserMicroserviceTests.Controllers
             };
             
             _service.Setup(s => s.LoginPasswordAsync(email, password))
-                .Throws<IncorrectPasswordException>();
+                .Throws<InvalidPasswordException>();
             
             var controller = new LoginController(_service.Object);
             
@@ -107,8 +107,7 @@ namespace UserMicroserviceTests.Controllers
             var result = await controller.LoginPasswordAsync(loginModel) as ObjectResult;
             
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(new IncorrectPasswordException().Message, result.Value);
+            Assert.IsInstanceOf<BadRequestObjectResult>(result);
         }
     }
 }

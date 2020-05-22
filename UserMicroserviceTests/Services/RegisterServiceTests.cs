@@ -18,24 +18,29 @@ namespace UserMicroserviceTests.Services
     {
         private Mock<IUserRepository> _repository;
         private Mock<IHashGenerator> _hashGenerator;
+        private Mock<IRegexValidator> _regexValidator;
 
         [SetUp]
         public void SetUp()
         {
             _repository = new Mock<IUserRepository>();
             _hashGenerator = new Mock<IHashGenerator>();
+            _regexValidator = new Mock<IRegexValidator>();
         }
 
         [Test]
         [Ignore("The mocking of UserRepository.CreateAsync() returns null instead of a User")]
-        public async Task RegisterPassword_UserWithPassword_ReturnsUserWithoutPassword()
+        public async Task RegisterPasswordAsync_UserWithPassword_ReturnsUserWithoutSensitiveData()
         {
             // Arrange
-            const string username = "test";
+            const string username = "username";
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+            
+            _regexValidator.Setup(r => r.IsValidEmail(email)).Returns(true);
+            _regexValidator.Setup(r => r.IsValidPassword(password)).Returns(true);
 
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt)).Returns(hashedPassword);
@@ -50,7 +55,7 @@ namespace UserMicroserviceTests.Services
 
             _repository.Setup(r => r.CreateAsync(user)).ReturnsAsync(user);
 
-            var service = new RegisterService(_repository.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object);
 
             // Act
             var result = await service.RegisterPasswordAsync(username, email, password);
@@ -61,14 +66,17 @@ namespace UserMicroserviceTests.Services
         }
 
         [Test]
-        public async Task RegisterPassword_ExistingUsername_ThrowsUsernameAlreadyExistsException()
+        public async Task RegisterPasswordAsync_ExistingUsername_ThrowsUsernameAlreadyExistsException()
         {
             // Arrange
-            const string username = "test";
+            const string username = "username";
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+            
+            _regexValidator.Setup(r => r.IsValidEmail(email)).Returns(true);
+            _regexValidator.Setup(r => r.IsValidPassword(password)).Returns(true);
 
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt))
@@ -84,7 +92,7 @@ namespace UserMicroserviceTests.Services
 
             _repository.Setup(r => r.ReadByUsernameAsync(username)).ReturnsAsync(user);
 
-            var service = new RegisterService(_repository.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object);
 
             // Act and assert
             Assert.ThrowsAsync<UsernameAlreadyExistsException>(
@@ -93,14 +101,17 @@ namespace UserMicroserviceTests.Services
         }
 
         [Test]
-        public async Task RegisterPassword_ExistingEmail_ThrowsEmailAlreadyExistsException()
+        public async Task RegisterPasswordAsync_ExistingEmail_ThrowsEmailAlreadyExistsException()
         {
             // Arrange
-            const string username = "test";
+            const string username = "username";
             const string email = "test@test.com";
-            const string password = "test";
+            const string password = "password";
             var salt = new byte[] {0x20, 0x20, 0x20, 0x20};
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
+
+            _regexValidator.Setup(r => r.IsValidEmail(email)).Returns(true);
+            _regexValidator.Setup(r => r.IsValidPassword(password)).Returns(true);
 
             _hashGenerator.Setup(h => h.Salt()).Returns(salt);
             _hashGenerator.Setup(h => h.Hash(password, salt))
@@ -116,7 +127,7 @@ namespace UserMicroserviceTests.Services
 
             _repository.Setup(r => r.ReadByEmailAsync(email)).ReturnsAsync(user);
 
-            var service = new RegisterService(_repository.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object);
 
             // Act and assert
             Assert.ThrowsAsync<EmailAlreadyExistsException>(

@@ -64,6 +64,7 @@ namespace UserMicroservice
             
             services.AddCors();
             services.AddControllers();
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             // Configure DI for application services
             services.AddTransient<ILoginService, LoginService>();
@@ -71,6 +72,7 @@ namespace UserMicroservice
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IHashGenerator, HashGenerator>();
             services.AddTransient<ITokenGenerator, TokenGenerator>();
+            services.AddTransient<IRegexValidator, RegexValidator>();
 
             // Configure Database Settings
             services.Configure<UserDatabaseSettings>(Configuration.GetSection(nameof(UserDatabaseSettings)));

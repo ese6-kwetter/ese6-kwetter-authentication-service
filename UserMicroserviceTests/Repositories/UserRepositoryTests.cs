@@ -40,7 +40,7 @@ namespace UserMicroserviceTests.Repositories
             // Arrange
             var user1 = new User
             {
-                Username = "test1",
+                Username = "username1",
                 Email = "test1@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -48,7 +48,7 @@ namespace UserMicroserviceTests.Repositories
             
             var user2 = new User
             {
-                Username = "test2",
+                Username = "username2",
                 Email = "test2@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -70,7 +70,7 @@ namespace UserMicroserviceTests.Repositories
             // Arrange
             var user1 = new User
             {
-                Username = "test1",
+                Username = "username1",
                 Email = "test1@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -78,7 +78,7 @@ namespace UserMicroserviceTests.Repositories
             
             var user2 = new User
             {
-                Username = "test2",
+                Username = "username2",
                 Email = "test2@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -112,7 +112,7 @@ namespace UserMicroserviceTests.Repositories
             // Arrange
             var user1 = new User
             {
-                Username = "test1",
+                Username = "username1",
                 Email = "test1@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -120,7 +120,7 @@ namespace UserMicroserviceTests.Repositories
             
             var user2 = new User
             {
-                Username = "test2",
+                Username = "username2",
                 Email = "test2@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -143,7 +143,7 @@ namespace UserMicroserviceTests.Repositories
             // Arrange
             var user1 = new User
             {
-                Username = "test1",
+                Username = "username1",
                 Email = "test1@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -162,7 +162,7 @@ namespace UserMicroserviceTests.Repositories
             // Arrange
             var user1 = new User
             {
-                Username = "test1",
+                Username = "username1",
                 Email = "test1@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -170,7 +170,7 @@ namespace UserMicroserviceTests.Repositories
             
             var user2 = new User
             {
-                Username = "test2",
+                Username = "username2",
                 Email = "test2@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -193,7 +193,7 @@ namespace UserMicroserviceTests.Repositories
             // Arrange
             var user1 = new User
             {
-                Username = "test1",
+                Username = "username1",
                 Email = "test1@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -212,7 +212,7 @@ namespace UserMicroserviceTests.Repositories
             // Arrange
             var user1 = new User
             {
-                Username = "test1",
+                Username = "username1",
                 Email = "test1@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -220,7 +220,7 @@ namespace UserMicroserviceTests.Repositories
             
             var user2 = new User
             {
-                Username = "test2",
+                Username = "username2",
                 Email = "test2@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -243,7 +243,7 @@ namespace UserMicroserviceTests.Repositories
             // Arrange
             var user1 = new User
             {
-                Username = "test",
+                Username = "username",
                 Email = "test@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -260,7 +260,7 @@ namespace UserMicroserviceTests.Repositories
         public async Task UpdateAsync_UserInDatabase_ReturnsUser()
         {
             // Arrange
-            const string username = "test1";
+            const string username = "username1";
             const string email = "test1@test.com";
             var user = new User
             {
@@ -289,7 +289,7 @@ namespace UserMicroserviceTests.Repositories
             // Arrange
             var user = new User
             {
-                Username = "test",
+                Username = "username",
                 Email = "test@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
@@ -311,7 +311,7 @@ namespace UserMicroserviceTests.Repositories
             // Arrange
             var user = new User
             {
-                Username = "test",
+                Username = "username",
                 Email = "test@test.com",
                 Password = new byte[] { 0x20, 0x20, 0x20, 0x20 },
                 Salt = new byte[] { 0x20, 0x20, 0x20, 0x20 }
