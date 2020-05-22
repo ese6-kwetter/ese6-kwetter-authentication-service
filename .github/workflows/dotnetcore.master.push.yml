@@ -12,6 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
+      - name: Decrypt the GPG encrypted config files
+        run: gpg --quiet --batch --yes --passphrase="${{ secrets.GPG_PASSPHRASE }}" --output ./UserMicroservice/appsettings.json --decrypt ./UserMicroservice/appsettings.json.gpg
+      
       - name: Install dependencies
         run: dotnet restore
       
