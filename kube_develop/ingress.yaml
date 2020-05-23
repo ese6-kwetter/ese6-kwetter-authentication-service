@@ -12,17 +12,16 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   rules:
-  - host: develop.user.dwetter.nl
-    http:
-      paths:
-      - backend:
-          serviceName: user-microservice
-          servicePort: 80
+    - host: develop.user.dwetter.nl
+      http:
+        paths:
+          - backend:
+              serviceName: user-microservice
+              servicePort: 80
   tls:
-  - hosts:
-    - develop.user.dwetter.nl
-    secretName: user-microservice-dwetter-tls
+    - secretName: user-microservice-dwetter-tls
+      hosts: develop.user.dwetter.nl
 status:
   loadBalancer:
     ingress:
-     - ip: 207.180.245.152
+      - ip: 207.180.245.152

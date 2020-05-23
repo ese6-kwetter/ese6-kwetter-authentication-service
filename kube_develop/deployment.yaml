@@ -16,15 +16,15 @@ spec:
         app: user-microservice
     spec:
       containers:
-      - image: ese6dwetter/user-microservice
-        imagePullPolicy: IfNotPresent
-        name: user-microservice
-        ports: 
-        - containerPort: 80
-        resources:
-          limits:
-            cpu: 100m
-            memory: 128Mi
-          requests:
-            cpu: 50m
-            memory: 64Mi
+        - image: ese6dwetter/user-microservice
+          imagePullPolicy: IfNotPresent
+          name: user-microservice
+          ports: 
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
