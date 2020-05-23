@@ -11,12 +11,12 @@ namespace UserMicroservice.Repositories
     {
         private readonly IMongoCollection<User> _users;
 
-        public UserRepository(IUserDatabaseSettings settings)
+        public UserRepository(IDatabaseSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
-            _users = database.GetCollection<User>(settings.UserCollectionName);
+            _users = database.GetCollection<User>(settings.CollectionName);
         }
         
         public async Task<User> CreateAsync(User user)
