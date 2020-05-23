@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Mongo2Go;
 using NUnit.Framework;
 using UserMicroservice.Entities;
@@ -18,11 +18,11 @@ namespace UserMicroserviceTests.Repositories
         {
             _mongoDbRunner = MongoDbRunner.Start();
 
-            var settings = new UserDatabaseSettings
+            var settings = new DatabaseSettings
             {
                 ConnectionString = _mongoDbRunner.ConnectionString,
-                DatabaseName = "RepositoryTests",
-                UserCollectionName = "UserCollection"
+                DatabaseName = "UserRepositoryTestsDatabase",
+                CollectionName = "UserCollection"
             };
 
             _repository = new UserRepository(settings);

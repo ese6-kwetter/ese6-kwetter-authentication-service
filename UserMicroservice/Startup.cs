@@ -75,9 +75,9 @@ namespace UserMicroservice
             services.AddTransient<IRegexValidator, RegexValidator>();
 
             // Configure Database Settings
-            services.Configure<UserDatabaseSettings>(Configuration.GetSection(nameof(UserDatabaseSettings)));
-            services.AddSingleton<IUserDatabaseSettings>(serviceProvider =>
-                serviceProvider.GetRequiredService<IOptions<UserDatabaseSettings>>().Value);
+            services.Configure<DatabaseSettings>(Configuration.GetSection(nameof(DatabaseSettings)));
+            services.AddSingleton<IDatabaseSettings>(serviceProvider =>
+                serviceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
             // Configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection(nameof(AppSettings));
