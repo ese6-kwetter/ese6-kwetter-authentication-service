@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY /out ./
 
-ENTRYPOINT ["dotnet", "UserService.dll"]
+ENTRYPOINT ["dotnet", "UserMicroservice.dll"]
