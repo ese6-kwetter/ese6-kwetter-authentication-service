@@ -96,10 +96,11 @@ jobs:
         with:
             namespace: dwetter-develop
             manifests: |
+              ./kube_develop/autoscaler.yaml
               ./kube_develop/certificate.yaml
               ./kube_develop/deployment.yaml
               ./kube_develop/ingress.yaml
               ./kube_develop/service.yaml
-              ./kube_develop/autoscaler.yaml
-            images: $DOCKER_IMAGE
+            images: |
+              $DOCKER_IMAGE
             
