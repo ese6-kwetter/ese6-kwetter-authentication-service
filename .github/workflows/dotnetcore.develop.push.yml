@@ -101,5 +101,6 @@ jobs:
               ./kube_develop/deployment.yaml
               ./kube_develop/ingress.yaml
               ./kube_develop/service.yaml
-            images: "$DOCKER_IMAGE"
+            images: |
+              $DOCKER_IMAGE
             
