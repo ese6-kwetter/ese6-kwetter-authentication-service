@@ -102,4 +102,4 @@ jobs:
               ./kube/ingress.yaml
               ./kube/service.yaml
             images: |
-              $DOCKER_IMAGE
+              ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
