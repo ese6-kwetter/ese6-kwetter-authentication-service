@@ -4,6 +4,10 @@ on:
   push:
     branches: [master]
 
+env:
+  CONTAINER_IMAGE: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
+  CONTAINER_IMAGE_LATEST: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:latest
+
 jobs:
   build:
     runs-on: ubuntu-18.04
@@ -62,9 +66,6 @@ jobs:
           path: .
       
       - name: Deliver Docker image
-        env:
-          CONTAINER_IMAGE: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
-          CONTAINER_IMAGE_LATEST: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:latest
         run: |
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
           docker build -t $CONTAINER_IMAGE -t $CONTAINER_IMAGE_LATEST .
