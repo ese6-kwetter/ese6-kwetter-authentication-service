@@ -96,9 +96,9 @@ jobs:
         with:
             namespace: dwetter-master
             manifests: |
+              ./kube/autoscaler.yaml
               ./kube/certificate.yaml
               ./kube/deployment.yaml
               ./kube/ingress.yaml
               ./kube/service.yaml
-              ./kube/autoscaler.yaml
-            images: $DOCKER_IMAGE
+            images: "$DOCKER_IMAGE"
