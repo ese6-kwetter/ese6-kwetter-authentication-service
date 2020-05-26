@@ -1,9 +1,13 @@
+using System;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -17,12 +21,13 @@ namespace UserMicroservice
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        private bool _running = true;
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -74,14 +79,17 @@ namespace UserMicroservice
             services.AddTransient<ITokenGenerator, TokenGenerator>();
             services.AddTransient<IRegexValidator, RegexValidator>();
 
-            // Configure Database Settings
-            services.Configure<DatabaseSettings>(Configuration.GetSection(nameof(DatabaseSettings)));
-            services.AddSingleton<IDatabaseSettings>(serviceProvider =>
-                serviceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value);
-
             // Configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection(nameof(AppSettings));
             services.Configure<AppSettings>(appSettingsSection);
+            var databaseSettingsSection = Configuration.GetSection(nameof(DatabaseSettings));
+            services.Configure<DatabaseSettings>(databaseSettingsSection);
+            // var messageQueueSettingsSection = Configuration.GetSection(nameof(MessageQueueSettings));
+            // services.Configure<MessageQueueSettings>(messageQueueSettingsSection);
+            
+            // Configure Database Settings
+            services.AddSingleton<IDatabaseSettings>(serviceProvider =>
+                serviceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value);
 
             // Configure JWT authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
@@ -110,6 +118,11 @@ namespace UserMicroservice
             //     options.ClientId = googleAuthNSection["ClientId"];
             //     options.ClientSecret = googleAuthNSection["ClientSecret"];
             // });
+            
+            // Health Checks with dependencies
+            services.AddHealthChecks()
+                .AddCheck("healthy", () => _running ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy())
+                .AddMongoDb(databaseSettingsSection.Get<DatabaseSettings>().ConnectionString, tags: new[] {"services"});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -140,6 +153,25 @@ namespace UserMicroservice
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            // Health Checks
+            app.UseHealthChecks("/healthy", new HealthCheckOptions
+            {
+                Predicate = r => r.Name.Contains("healthy")
+            });
+            app.UseHealthChecks("/ready", new HealthCheckOptions
+            {
+                Predicate = r => r.Tags.Contains("services")
+            });
+            
+            app.Map("/switch", appBuilder =>
+            {
+                appBuilder.Run(async context =>
+                {
+                    _running = !_running;
+                    await context.Response.WriteAsync($"{Environment.MachineName} running {_running}");
+                });
             });
         }
     }
