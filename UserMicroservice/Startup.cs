@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RabbitMQ.Client;
 using Sentry.Extensibility;
 using UserMicroservice.Helpers;
 using UserMicroservice.Repositories;
@@ -35,7 +36,7 @@ namespace UserMicroservice
         public void ConfigureServices(IServiceCollection services)
         {
             #region Settings
-            
+
             // Configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection(nameof(AppSettings));
             services.Configure<AppSettings>(appSettingsSection);
@@ -45,11 +46,11 @@ namespace UserMicroservice
 
             var messageQueueSection = Configuration.GetSection(nameof(MessageQueueSettings));
             services.Configure<MessageQueueSettings>(Configuration.GetSection(nameof(MessageQueueSettings)));
-            
+
             #endregion
-            
+
             #region Swagger.io
-            
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -89,7 +90,7 @@ namespace UserMicroservice
             // Configure DI for database settings
             services.AddSingleton<IDatabaseSettings>(serviceProvider =>
                 serviceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value);
-            
+
             // Configure RabbitMQ
             services.AddMessagePublisher(messageQueueSection.Get<MessageQueueSettings>().Uri);
 
@@ -100,7 +101,7 @@ namespace UserMicroservice
             services.AddTransient<IHashGenerator, HashGenerator>();
             services.AddTransient<ITokenGenerator, TokenGenerator>();
             services.AddTransient<IRegexValidator, RegexValidator>();
-            
+
             // Configure JWT authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             var signingKey = Encoding.ASCII.GetBytes(appSettings.JwtSecret);
@@ -141,17 +142,14 @@ namespace UserMicroservice
             #region Health Checks with dependencies
 
             services.AddHealthChecks()
-                .AddCheck(
-                    "healthy",
-                    () => HealthCheckResult.Healthy()
-                ).AddMongoDb(
+                .AddMongoDb(
                     databaseSettingsSection.Get<DatabaseSettings>().ConnectionString,
                     tags: new[] {"services"}
-                );
-                // .AddRabbitMQ(
-                //     databaseSettingsSection.Get<MessageQueueSettings>().Uri,
-                //     tags: new[] {"services"}
-                //     );
+                )
+                .AddRabbitMQ(
+                    new Uri(messageQueueSection.Get<MessageQueueSettings>().Uri),
+                    tags: new[] {"services"}
+            );
 
             #endregion
         }
