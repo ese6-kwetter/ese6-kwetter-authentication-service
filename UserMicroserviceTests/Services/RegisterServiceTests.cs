@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MessageBroker;
 using Microsoft.AspNetCore.Mvc;
 using UserMicroservice.Entities;
 using UserMicroservice.Exceptions;
@@ -19,6 +20,7 @@ namespace UserMicroserviceTests.Services
         private Mock<IUserRepository> _repository;
         private Mock<IHashGenerator> _hashGenerator;
         private Mock<IRegexValidator> _regexValidator;
+        private Mock<IMessageQueuePublisher> _messageQueuePublisher;
 
         [SetUp]
         public void SetUp()
@@ -26,6 +28,7 @@ namespace UserMicroserviceTests.Services
             _repository = new Mock<IUserRepository>();
             _hashGenerator = new Mock<IHashGenerator>();
             _regexValidator = new Mock<IRegexValidator>();
+            _messageQueuePublisher = new Mock<IMessageQueuePublisher>();
         }
 
         [Test]
@@ -55,7 +58,7 @@ namespace UserMicroserviceTests.Services
 
             _repository.Setup(r => r.CreateAsync(user)).ReturnsAsync(user);
 
-            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object, _messageQueuePublisher.Object);
 
             // Act
             var result = await service.RegisterPasswordAsync(username, email, password);
@@ -92,7 +95,7 @@ namespace UserMicroserviceTests.Services
 
             _repository.Setup(r => r.ReadByUsernameAsync(username)).ReturnsAsync(user);
 
-            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object, _messageQueuePublisher.Object);
 
             // Act and assert
             Assert.ThrowsAsync<UsernameAlreadyExistsException>(
@@ -127,7 +130,7 @@ namespace UserMicroserviceTests.Services
 
             _repository.Setup(r => r.ReadByEmailAsync(email)).ReturnsAsync(user);
 
-            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object);
+            var service = new RegisterService(_repository.Object, _regexValidator.Object, _hashGenerator.Object, _messageQueuePublisher.Object);
 
             // Act and assert
             Assert.ThrowsAsync<EmailAlreadyExistsException>(

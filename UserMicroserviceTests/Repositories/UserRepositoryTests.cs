@@ -18,14 +18,14 @@ namespace UserMicroserviceTests.Repositories
         {
             _mongoDbRunner = MongoDbRunner.Start();
 
-            var settings = new DatabaseSettings
+            var databaseSettings = new DatabaseSettings
             {
                 ConnectionString = _mongoDbRunner.ConnectionString,
                 DatabaseName = "UserRepositoryTestsDatabase",
                 CollectionName = "UserCollection"
             };
 
-            _repository = new UserRepository(settings);
+            _repository = new UserRepository(databaseSettings);
         }
 
         [TearDown]
