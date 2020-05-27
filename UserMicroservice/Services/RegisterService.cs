@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Google.Apis.Auth;
 using MessageBroker;
 using MongoDB.Bson;
+using Newtonsoft.Json;
 using UserMicroservice.Entities;
 using UserMicroservice.Exceptions;
 using UserMicroservice.Helpers;
@@ -52,7 +53,7 @@ namespace UserMicroservice.Services
             });
 
             await _messageQueuePublisher.PublishMessageAsync("Dwetter", "EmailMicroservice", "RegisterUser",
-                user.WithoutSensitiveData().ToJson());
+                JsonConvert.SerializeObject(user.WithoutSensitiveData()));
 
             return user.WithoutSensitiveData();
         }
@@ -83,7 +84,7 @@ namespace UserMicroservice.Services
             });
             
             await _messageQueuePublisher.PublishMessageAsync("Dwetter", "EmailMicroservice", "RegisterUser",
-                 user.WithoutSensitiveData().ToJson());
+                JsonConvert.SerializeObject(user.WithoutSensitiveData()));
 
             return user.WithoutSensitiveData();
         }
