@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using Google.Apis.Auth;
@@ -52,7 +52,7 @@ namespace UserMicroservice.Services
             });
 
             await _messageQueuePublisher.PublishMessageAsync("Dwetter", "EmailMicroservice", "RegisterUser",
-                user.Id);
+                user.WithoutSensitiveData().ToJson());
 
             return user.WithoutSensitiveData();
         }
