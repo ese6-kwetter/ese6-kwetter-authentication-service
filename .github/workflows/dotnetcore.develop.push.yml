@@ -5,8 +5,8 @@ on:
     branches: [develop]
 
 env:
-  DOCKER_IMAGE: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
-  DOCKER_IMAGE_DEVELOP: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:develop
+  DOCKER_IMAGE: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.sha }}
+  DOCKER_IMAGE_DEVELOP: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.DOCKER_REPOSITORY }}:develop
 
 jobs:
   build:
@@ -102,5 +102,5 @@ jobs:
               ./kube_develop/ingress.yaml
               ./kube_develop/service.yaml
             images: |
-              ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.REPOSITORY_NAME }}:${{ github.sha }}
+              ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.sha }}
             

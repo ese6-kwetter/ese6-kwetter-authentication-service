@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Google.Apis.Auth;
+using MessageBroker;
 using UserMicroservice.Entities;
 using UserMicroservice.Exceptions;
 using UserMicroservice.Helpers;
@@ -13,22 +14,24 @@ namespace UserMicroservice.Services
         private readonly IUserRepository _repository;
         private readonly IRegexValidator _regexValidator;
         private readonly IHashGenerator _hashGenerator;
+        private readonly IMessageQueuePublisher _messageQueuePublisher;
         
-        public RegisterService(IUserRepository repository, IRegexValidator regexValidator, IHashGenerator hashGenerator)
+        public RegisterService(IUserRepository repository, IRegexValidator regexValidator, IHashGenerator hashGenerator, IMessageQueuePublisher messageQueuePublisher)
         {
             _repository = repository;
             _regexValidator = regexValidator;
             _hashGenerator = hashGenerator;
+            _messageQueuePublisher = messageQueuePublisher;
         }
 
         public async Task<User> RegisterPasswordAsync(string username, string email, string password)
         {
             if (!_regexValidator.IsValidEmail(email))
                 throw new InvalidEmailException();
-            
+
             if (!_regexValidator.IsValidPassword(password))
                 throw new InvalidPasswordException();
-                
+
             if (await _repository.ReadByUsernameAsync(username) != null)
                 throw new UsernameAlreadyExistsException();
 
@@ -45,6 +48,9 @@ namespace UserMicroservice.Services
                 Password = hashedPassword,
                 Salt = salt,
             });
+
+            await _messageQueuePublisher.PublishMessageAsync("Dwetter", "EmailMicroservice", "RegisterUser",
+                user.Id);
 
             return user.WithoutSensitiveData();
         }
@@ -73,6 +79,9 @@ namespace UserMicroservice.Services
                 OAuthIssuer = "Google",
                 OAuthSubject = payload.Subject
             });
+            
+            await _messageQueuePublisher.PublishMessageAsync("Dwetter", "EmailMicroservice", "RegisterUser",
+                user.Id);
 
             return user.WithoutSensitiveData();
         }

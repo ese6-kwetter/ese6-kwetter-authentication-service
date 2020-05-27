@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using MessageBroker;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Sentry.Extensibility;
 using UserMicroservice.Helpers;
 using UserMicroservice.Repositories;
 using UserMicroservice.Services;
@@ -32,7 +34,22 @@ namespace UserMicroservice
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Swagger.io
+            #region Settings
+            
+            // Configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection(nameof(AppSettings));
+            services.Configure<AppSettings>(appSettingsSection);
+
+            var databaseSettingsSection = Configuration.GetSection(nameof(DatabaseSettings));
+            services.Configure<DatabaseSettings>(databaseSettingsSection);
+
+            var messageQueueSection = Configuration.GetSection(nameof(MessageQueueSettings));
+            services.Configure<MessageQueueSettings>(Configuration.GetSection(nameof(MessageQueueSettings)));
+            
+            #endregion
+            
+            #region Swagger.io
+            
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -40,7 +57,7 @@ namespace UserMicroservice
                     Version = "v1",
                     Title = "Values Api"
                 });
-                
+
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -50,7 +67,7 @@ namespace UserMicroservice
                     In = ParameterLocation.Header,
                     Description = "JWT Authorization header using the Bearer scheme."
                 });
-                
+
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
@@ -62,14 +79,19 @@ namespace UserMicroservice
                                 Id = "Bearer"
                             }
                         },
-                        new string[]{ }
+                        new string[] { }
                     }
                 });
             });
+
+            #endregion
+
+            // Configure DI for database settings
+            services.AddSingleton<IDatabaseSettings>(serviceProvider =>
+                serviceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value);
             
-            services.AddCors();
-            services.AddControllers();
-            services.AddRouting(options => options.LowercaseUrls = true);
+            // Configure RabbitMQ
+            services.AddMessagePublisher(messageQueueSection.Get<MessageQueueSettings>().Uri);
 
             // Configure DI for application services
             services.AddTransient<ILoginService, LoginService>();
@@ -78,39 +100,30 @@ namespace UserMicroservice
             services.AddTransient<IHashGenerator, HashGenerator>();
             services.AddTransient<ITokenGenerator, TokenGenerator>();
             services.AddTransient<IRegexValidator, RegexValidator>();
-
-            // Configure strongly typed settings objects
-            var appSettingsSection = Configuration.GetSection(nameof(AppSettings));
-            services.Configure<AppSettings>(appSettingsSection);
-            var databaseSettingsSection = Configuration.GetSection(nameof(DatabaseSettings));
-            services.Configure<DatabaseSettings>(databaseSettingsSection);
-            // var messageQueueSettingsSection = Configuration.GetSection(nameof(MessageQueueSettings));
-            // services.Configure<MessageQueueSettings>(messageQueueSettingsSection);
             
-            // Configure Database Settings
-            services.AddSingleton<IDatabaseSettings>(serviceProvider =>
-                serviceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value);
-
             // Configure JWT authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.JwtSecret);
+            var signingKey = Encoding.ASCII.GetBytes(appSettings.JwtSecret);
+
+            #region Authentication
+
             services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
+                }
+            ).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
-                });
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(signingKey),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
             // .AddGoogle(options =>
             // {
             //     var googleAuthNSection = Configuration.GetSection("Authentication:Google");
@@ -118,11 +131,29 @@ namespace UserMicroservice
             //     options.ClientId = googleAuthNSection["ClientId"];
             //     options.ClientSecret = googleAuthNSection["ClientSecret"];
             // });
-            
-            // Health Checks with dependencies
+
+            #endregion
+
+            services.AddCors();
+            services.AddControllers();
+            services.AddRouting(options => options.LowercaseUrls = true);
+
+            #region Health Checks with dependencies
+
             services.AddHealthChecks()
-                .AddCheck("healthy", () => _running ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy())
-                .AddMongoDb(databaseSettingsSection.Get<DatabaseSettings>().ConnectionString, tags: new[] {"services"});
+                .AddCheck(
+                    "healthy",
+                    () => HealthCheckResult.Healthy()
+                ).AddMongoDb(
+                    databaseSettingsSection.Get<DatabaseSettings>().ConnectionString,
+                    tags: new[] {"services"}
+                );
+                // .AddRabbitMQ(
+                //     databaseSettingsSection.Get<MessageQueueSettings>().Uri,
+                //     tags: new[] {"services"}
+                //     );
+
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -130,6 +161,8 @@ namespace UserMicroservice
         {
             if (env.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
+                
                 // Swagger.io
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
@@ -145,17 +178,20 @@ namespace UserMicroservice
                 .AllowAnyHeader());
             
             // Routing with authentication and authorization
-            app.UseAuthentication();
-            
-            // The call to UseAuthorization should appear between app.UseRouting() and app.UseEndpoints(..) for authorization to be correctly evaluated.
+            // The call to UseAuthorization should appear between app.UseRouting()
+            // and app.UseEndpoints(..) for authorization to be correctly evaluated.
             app.UseRouting();
+            
+            app.UseAuthentication();
             app.UseAuthorization();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-            // Health Checks
+            #region Health Checks
+            
             app.UseHealthChecks("/healthy", new HealthCheckOptions
             {
                 Predicate = r => r.Name.Contains("healthy")
@@ -173,6 +209,8 @@ namespace UserMicroservice
                     await context.Response.WriteAsync($"{Environment.MachineName} running {_running}");
                 });
             });
+            
+            #endregion
         }
     }
 }
