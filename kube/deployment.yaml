@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-microservice
+  namespace: dwetter
+  labels:
+    app: user-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-microservice
+  template:
+    metadata:
+      labels:
+        app: user-microservice
+    spec:
+      containers:
+        - image: ese6dwetter/user-microservice
+          imagePullPolicy: IfNotPresent
+          name: user-microservice
+          ports: 
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /healthy
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 15
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
