@@ -37,5 +37,56 @@ namespace UserMicroservice.Helpers
 
             return tokenHandler.WriteToken(token);
         }
+
+        public bool ValidateJwt(string token, string claim)
+        {
+            var principal = GetPrincipal(token);
+
+            if (principal == null)
+                return false;
+
+            ClaimsIdentity identity;
+            try
+            {
+                identity = (ClaimsIdentity)principal.Identity;
+            }
+            catch (NullReferenceException)
+            {
+                return false;
+            }
+            
+            return identity.FindFirst(ClaimTypes.Name).Value.Equals(claim);
+        }
+
+        private ClaimsPrincipal GetPrincipal(string token)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var jwtToken = (JwtSecurityToken) tokenHandler.ReadToken(token);
+
+                if (jwtToken == null)
+                    return null;
+
+                var key = Convert.FromBase64String(_appSettings.JwtSecret);
+                
+
+                var parameters = new TokenValidationParameters()
+                {
+                    RequireExpirationTime = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
+
+                var principal = tokenHandler.ValidateToken(token, parameters, out var securityToken);
+                
+                return principal;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }
