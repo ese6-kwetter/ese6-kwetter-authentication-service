@@ -12,8 +12,8 @@ namespace UserMicroserviceTests.Services
 {
     public class LoginServiceTests
     {
-        private Mock<IUserRepository> _repository;
         private Mock<IHashGenerator> _hashGenerator;
+        private Mock<IUserRepository> _repository;
         private Mock<ITokenGenerator> _tokenGenerator;
 
         [SetUp]
@@ -50,13 +50,13 @@ namespace UserMicroserviceTests.Services
             _repository.Setup(r => r.ReadByEmailAsync(email)).ReturnsAsync(user);
 
             var service = new LoginService(_repository.Object, _hashGenerator.Object, _tokenGenerator.Object);
-            
+
             // Act
             var result = await service.LoginPasswordAsync(email, password);
-            
+
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(jwt, result.Jwt);
+            Assert.AreEqual(jwt, result.Token);
         }
 
         [Test]
@@ -77,7 +77,6 @@ namespace UserMicroserviceTests.Services
         [Test]
         public async Task LoginPasswordAsync_UserWithIncorrectPassword_ThrowsIncorrectPasswordException()
         {
-            
             // Arrange
             var id = new Guid();
             const string username = "username";
@@ -100,7 +99,7 @@ namespace UserMicroserviceTests.Services
             _repository.Setup(r => r.ReadByEmailAsync(email)).ReturnsAsync(user);
 
             var service = new LoginService(_repository.Object, _hashGenerator.Object, _tokenGenerator.Object);
-            
+
             // Act and assert
             Assert.ThrowsAsync<InvalidPasswordException>(() => service.LoginPasswordAsync(email, password));
         }

@@ -1,19 +1,18 @@
-﻿using System;
+﻿using NUnit.Framework;
 using UserMicroservice.Helpers;
-using NUnit.Framework;
 
 namespace UserMicroserviceTests.Helpers
 {
     [TestFixture]
     public class HashGeneratorTests
     {
-        private IHashGenerator _hashGenerator;
-
         [SetUp]
         public void Setup()
         {
             _hashGenerator = new HashGenerator();
         }
+
+        private IHashGenerator _hashGenerator;
 
         [Test]
         public void Hash_AreNotEqual_ReturnsTrue()
@@ -28,38 +27,17 @@ namespace UserMicroserviceTests.Helpers
             // Assert
             Assert.AreNotEqual(plainText, result);
         }
-        
-        [Test]
-        public void Verify_ReturnsTrue()
-        {
-            // Arrange
-            const string plainText = "test";
-            var salt = _hashGenerator.Salt();
-            var hash = _hashGenerator.Hash(plainText, salt);
 
-            // Act
-            var result = _hashGenerator.Verify(plainText, salt, hash);
+        [Test]
+        public void Salt_GeneratesSalt_ReturnsByteArray()
+        {
+            // Arrange and act
+            var salt = _hashGenerator.Salt();
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.IsInstanceOf<byte[]>(salt);
         }
-        
-        [Test]
-        public void Verify_IncorrectString_ReturnsFalse()
-        {
-            // Arrange
-            const string plainText = "test";
-            const string plainText2 = "test2";
-            var salt = _hashGenerator.Salt();
-            var hash = _hashGenerator.Hash(plainText, salt);
 
-            // Act
-            var result = _hashGenerator.Verify(plainText2, salt, hash);
-
-            // Assert
-            Assert.IsFalse(result);
-        }
-        
         [Test]
         public void Verify_IncorrectSalt_ReturnsFalse()
         {
@@ -75,7 +53,23 @@ namespace UserMicroserviceTests.Helpers
             // Assert
             Assert.IsFalse(result);
         }
-        
+
+        [Test]
+        public void Verify_IncorrectString_ReturnsFalse()
+        {
+            // Arrange
+            const string plainText = "test";
+            const string plainText2 = "test2";
+            var salt = _hashGenerator.Salt();
+            var hash = _hashGenerator.Hash(plainText, salt);
+
+            // Act
+            var result = _hashGenerator.Verify(plainText2, salt, hash);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
         [Test]
         public void Verify_IncorrectStringAndSalt_ReturnsFalse()
         {
@@ -94,13 +88,18 @@ namespace UserMicroserviceTests.Helpers
         }
 
         [Test]
-        public void Salt_GeneratesSalt_ReturnsByteArray()
+        public void Verify_ReturnsTrue()
         {
-            // Arrange and act
+            // Arrange
+            const string plainText = "test";
             var salt = _hashGenerator.Salt();
+            var hash = _hashGenerator.Hash(plainText, salt);
+
+            // Act
+            var result = _hashGenerator.Verify(plainText, salt, hash);
 
             // Assert
-            Assert.IsInstanceOf<byte[]>(salt);
+            Assert.IsTrue(result);
         }
     }
 }

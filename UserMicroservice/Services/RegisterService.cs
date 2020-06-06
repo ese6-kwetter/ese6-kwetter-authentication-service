@@ -1,9 +1,7 @@
 using System;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Google.Apis.Auth;
 using MessageBroker;
-using MongoDB.Bson;
 using Newtonsoft.Json;
 using UserMicroservice.Entities;
 using UserMicroservice.Exceptions;
@@ -14,12 +12,13 @@ namespace UserMicroservice.Services
 {
     public class RegisterService : IRegisterService
     {
-        private readonly IUserRepository _repository;
-        private readonly IRegexValidator _regexValidator;
         private readonly IHashGenerator _hashGenerator;
         private readonly IMessageQueuePublisher _messageQueuePublisher;
-        
-        public RegisterService(IUserRepository repository, IRegexValidator regexValidator, IHashGenerator hashGenerator, IMessageQueuePublisher messageQueuePublisher)
+        private readonly IRegexValidator _regexValidator;
+        private readonly IUserRepository _repository;
+
+        public RegisterService(IUserRepository repository, IRegexValidator regexValidator, IHashGenerator hashGenerator,
+            IMessageQueuePublisher messageQueuePublisher)
         {
             _repository = repository;
             _regexValidator = regexValidator;
@@ -49,19 +48,30 @@ namespace UserMicroservice.Services
                 Username = username,
                 Email = email,
                 Password = hashedPassword,
-                Salt = salt,
+                Salt = salt
             });
 
             await _messageQueuePublisher.PublishMessageAsync("Dwetter", "EmailMicroservice", "RegisterUser",
-                JsonConvert.SerializeObject(user.WithoutSensitiveData()));
+                JsonConvert.SerializeObject(new object[]
+                {
+                    user.Email,
+                    user.Username
+                }));
+
+            await _messageQueuePublisher.PublishMessageAsync("Dwetter", "ProfileMicroservice", "RegisterUser",
+                JsonConvert.SerializeObject(new object[]
+                {
+                    user.Id,
+                    user.Username
+                }));
 
             return user.WithoutSensitiveData();
         }
 
-        public async Task<User> RegisterGoogleAsync(string tokenId)
+        public async Task<User> RegisterGoogleAsync(string token)
         {
             var payload =
-                await GoogleJsonWebSignature.ValidateAsync(tokenId, new GoogleJsonWebSignature.ValidationSettings())
+                await GoogleJsonWebSignature.ValidateAsync(token, new GoogleJsonWebSignature.ValidationSettings())
                 ?? throw new AccountNotFoundException();
 
             // Check if user already exists
@@ -82,9 +92,22 @@ namespace UserMicroservice.Services
                 OAuthIssuer = "Google",
                 OAuthSubject = payload.Subject
             });
-            
+
+            // Publish message to EmailMicroservice queue
             await _messageQueuePublisher.PublishMessageAsync("Dwetter", "EmailMicroservice", "RegisterUser",
-                JsonConvert.SerializeObject(user.WithoutSensitiveData()));
+                JsonConvert.SerializeObject(new object[]
+                {
+                    user.Id,
+                    user.Username
+                }));
+
+            // Publish message to ProfileMicroservice queue
+            await _messageQueuePublisher.PublishMessageAsync("Dwetter", "ProfileMicroservice", "RegisterUser",
+                JsonConvert.SerializeObject(new object[]
+                {
+                    user.Id,
+                    user.Username
+                }));
 
             return user.WithoutSensitiveData();
         }

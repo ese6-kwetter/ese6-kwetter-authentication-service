@@ -15,7 +15,7 @@ namespace UserMicroserviceTests.Helpers
             const string username = "username";
             const string email = "test@test.com";
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
-            
+
             var user = new User
             {
                 Username = username,
@@ -39,16 +39,16 @@ namespace UserMicroserviceTests.Helpers
             const string username = "username";
             const string email = "test@test.com";
             var hashedPassword = new byte[] {0x20, 0x20, 0x20, 0x20};
-            
+
             var user = new User
             {
                 Username = username,
                 Email = email,
                 Password = hashedPassword
             };
-            
+
             var users = new List<User>();
-            
+
             for (var i = 0; i < 5; i++)
                 users.Add(user);
 

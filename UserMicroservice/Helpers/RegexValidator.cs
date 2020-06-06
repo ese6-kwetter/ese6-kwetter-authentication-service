@@ -5,9 +5,10 @@ namespace UserMicroservice.Helpers
     public class RegexValidator : IRegexValidator
     {
         private const string EmailPattern =
-        @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
-        + "@"
-        + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z";
+            @"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
+            + "@"
+            + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z";
+
         /*
          * ^: first line
          * (?=.*[a-z]) : Should have at least one lower case
@@ -18,7 +19,7 @@ namespace UserMicroservice.Helpers
          * $ : end line
          */
         private const string PasswordPattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$";
-        
+
         public bool IsValidEmail(string email)
         {
             return Regex.IsMatch(email, EmailPattern);
