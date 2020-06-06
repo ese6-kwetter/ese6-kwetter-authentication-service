@@ -56,7 +56,7 @@ namespace UserMicroserviceTests.Services
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(jwt, result.Jwt);
+            Assert.AreEqual(jwt, result.Token);
         }
 
         [Test]

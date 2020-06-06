@@ -30,7 +30,7 @@ namespace UserMicroservice.Controllers
         [HttpPost("password")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RegisterPasswordAsync([FromBody] RegisterModel model)
+        public async Task<IActionResult> RegisterPasswordAsync([FromBody] RegisterPasswordModel model)
         {
             try
             {
@@ -50,11 +50,11 @@ namespace UserMicroservice.Controllers
         [HttpPost("google")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RegisterGoogleAsync([FromBody] RegisterModel model)
+        public async Task<IActionResult> RegisterGoogleAsync([FromBody] RegisterGoogleModel model)
         {
             try
             {
-                return Ok(await _service.RegisterGoogleAsync(model.TokenId));
+                return Ok(await _service.RegisterGoogleAsync(model.Token));
             }
             catch (AccountNotFoundException ex)
             {
@@ -74,11 +74,11 @@ namespace UserMicroservice.Controllers
         [HttpPost("apple")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> RegisterAppleAsync([FromBody] RegisterModel model)
+        public async Task<IActionResult> RegisterAppleAsync([FromBody] RegisterAppleModel model)
         {
             try
             {
-                return Ok(await _service.RegisterAppleAsync(model.TokenId));
+                return Ok(await _service.RegisterAppleAsync(model.Token));
             }
             catch (AccountNotFoundException ex)
             {

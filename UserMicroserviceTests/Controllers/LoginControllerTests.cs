@@ -32,7 +32,7 @@ namespace UserMicroserviceTests.Controllers
             const string password = "password";
             const string jwt = "jwt";
 
-            var loginModel = new LoginModel
+            var loginModel = new LoginPasswordModel
             {
                 Email = email,
                 Password = password
@@ -43,7 +43,7 @@ namespace UserMicroserviceTests.Controllers
                 Id = id,
                 Username = username,
                 Email = email,
-                Jwt = jwt
+                Token = jwt
             };
 
             _service.Setup(s => s.LoginPasswordAsync(email, password))
@@ -67,7 +67,7 @@ namespace UserMicroserviceTests.Controllers
             const string email = "test@test.com";
             const string password = "password";
 
-            var loginModel = new LoginModel
+            var loginModel = new LoginPasswordModel
             {
                 Email = email,
                 Password = password
@@ -92,7 +92,7 @@ namespace UserMicroserviceTests.Controllers
             const string email = "test@test.com";
             const string password = "password";
 
-            var loginModel = new LoginModel
+            var loginModel = new LoginPasswordModel
             {
                 Email = email,
                 Password = password

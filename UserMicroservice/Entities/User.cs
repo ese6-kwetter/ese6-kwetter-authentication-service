@@ -8,7 +8,7 @@ namespace UserMicroservice.Entities
         public string Email { get; set; }
         public byte[] Password { get; set; }
         public byte[] Salt { get; set; }
-        [BsonIgnore] public string Jwt { get; set; }
+        [BsonIgnore] public string Token { get; set; }
         public string OAuthSubject { get; set; }
         public string OAuthIssuer { get; set; }
     }

@@ -30,7 +30,7 @@ namespace UserMicroserviceTests.Controllers
             const string email = "test@test.com";
             const string password = "password";
 
-            var registerModel = new RegisterModel
+            var registerModel = new RegisterPasswordModel
             {
                 Username = username,
                 Email = email,
@@ -57,7 +57,7 @@ namespace UserMicroserviceTests.Controllers
             const string email = "test@test.com";
             const string password = "password";
 
-            var registerModel = new RegisterModel
+            var registerModel = new RegisterPasswordModel
             {
                 Username = username,
                 Email = email,
@@ -85,7 +85,7 @@ namespace UserMicroserviceTests.Controllers
             const string email = "test@test.com";
             const string password = "password";
 
-            var registerModel = new RegisterModel
+            var registerModel = new RegisterPasswordModel
             {
                 Username = username,
                 Email = email,

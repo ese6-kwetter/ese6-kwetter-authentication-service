@@ -31,7 +31,7 @@ namespace UserMicroservice.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> LoginPasswordAsync([FromBody] LoginModel model)
+        public async Task<IActionResult> LoginPasswordAsync([FromBody] LoginPasswordModel model)
         {
             try
             {
@@ -56,11 +56,11 @@ namespace UserMicroservice.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> LoginGoogleAsync([FromBody] LoginModel model)
+        public async Task<IActionResult> LoginGoogleAsync([FromBody] LoginGoogleModel model)
         {
             try
             {
-                return Ok(await _service.LoginGoogleAsync(model.TokenId));
+                return Ok(await _service.LoginGoogleAsync(model.Token));
             }
             catch (AccountNotFoundException ex)
             {
@@ -81,11 +81,11 @@ namespace UserMicroservice.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> LoginAppleAsync([FromBody] LoginModel model)
+        public async Task<IActionResult> LoginAppleAsync([FromBody] LoginAppleModel model)
         {
             try
             {
-                return Ok(await _service.LoginAppleAsync(model.TokenId));
+                return Ok(await _service.LoginAppleAsync(model.Token));
             }
             catch (AccountNotFoundException ex)
             {
