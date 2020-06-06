@@ -21,7 +21,7 @@ namespace UserMicroservice.Controllers
         {
             _service = service;
         }
-        
+
         /// <summary>
         ///     Register a User with password.
         /// </summary>
@@ -41,7 +41,7 @@ namespace UserMicroservice.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
         /// <summary>
         ///     Register a User with a Google account.
         /// </summary>

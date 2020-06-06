@@ -1,11 +1,9 @@
-using System;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace UserMicroservice.Entities
 {
-    public class User
+    public class User : BaseEntity
     {
-        [BsonId] public Guid Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
         public byte[] Password { get; set; }

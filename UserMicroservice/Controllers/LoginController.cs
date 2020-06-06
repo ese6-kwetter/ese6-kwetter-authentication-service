@@ -21,7 +21,7 @@ namespace UserMicroservice.Controllers
         {
             _service = service;
         }
-        
+
         /// <summary>
         ///     Login a User with password.
         /// </summary>

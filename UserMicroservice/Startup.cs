@@ -13,8 +13,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using RabbitMQ.Client;
-using Sentry.Extensibility;
 using UserMicroservice.Helpers;
 using UserMicroservice.Repositories;
 using UserMicroservice.Services;
@@ -24,13 +22,14 @@ namespace UserMicroservice
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
         private bool _running = true;
-        
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
+
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -87,12 +86,14 @@ namespace UserMicroservice
 
             #endregion
 
+            // Configure RabbitMQ
+            services.AddMessagePublisher(messageQueueSection.Get<MessageQueueSettings>().Uri);
+
+            #region Dependency Injection
+
             // Configure DI for database settings
             services.AddSingleton<IDatabaseSettings>(serviceProvider =>
                 serviceProvider.GetRequiredService<IOptions<DatabaseSettings>>().Value);
-
-            // Configure RabbitMQ
-            services.AddMessagePublisher(messageQueueSection.Get<MessageQueueSettings>().Uri);
 
             // Configure DI for application services
             services.AddTransient<ILoginService, LoginService>();
@@ -102,11 +103,13 @@ namespace UserMicroservice
             services.AddTransient<ITokenGenerator, TokenGenerator>();
             services.AddTransient<IRegexValidator, RegexValidator>();
 
+            #endregion
+
+            #region Authentication
+
             // Configure JWT authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             var signingKey = Encoding.ASCII.GetBytes(appSettings.JwtSecret);
-
-            #region Authentication
 
             services.AddAuthentication(options =>
                 {
@@ -125,13 +128,6 @@ namespace UserMicroservice
                     ValidateAudience = false
                 };
             });
-            // .AddGoogle(options =>
-            // {
-            //     var googleAuthNSection = Configuration.GetSection("Authentication:Google");
-            //
-            //     options.ClientId = googleAuthNSection["ClientId"];
-            //     options.ClientSecret = googleAuthNSection["ClientSecret"];
-            // });
 
             #endregion
 
@@ -142,6 +138,7 @@ namespace UserMicroservice
             #region Health Checks with dependencies
 
             services.AddHealthChecks()
+                .AddCheck("healthy", () => HealthCheckResult.Healthy())
                 .AddMongoDb(
                     databaseSettingsSection.Get<DatabaseSettings>().ConnectionString,
                     tags: new[] {"services"}
@@ -149,7 +146,7 @@ namespace UserMicroservice
                 .AddRabbitMQ(
                     new Uri(messageQueueSection.Get<MessageQueueSettings>().Uri),
                     tags: new[] {"services"}
-            );
+                );
 
             #endregion
         }
@@ -160,7 +157,7 @@ namespace UserMicroservice
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                
+
                 // Swagger.io
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
@@ -174,22 +171,19 @@ namespace UserMicroservice
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
-            
+
             // Routing with authentication and authorization
             // The call to UseAuthorization should appear between app.UseRouting()
             // and app.UseEndpoints(..) for authorization to be correctly evaluated.
             app.UseRouting();
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
-            
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             #region Health Checks
-            
+
             app.UseHealthChecks("/healthy", new HealthCheckOptions
             {
                 Predicate = r => r.Name.Contains("healthy")
@@ -198,7 +192,7 @@ namespace UserMicroservice
             {
                 Predicate = r => r.Tags.Contains("services")
             });
-            
+
             app.Map("/switch", appBuilder =>
             {
                 appBuilder.Run(async context =>
@@ -207,7 +201,7 @@ namespace UserMicroservice
                     await context.Response.WriteAsync($"{Environment.MachineName} running {_running}");
                 });
             });
-            
+
             #endregion
         }
     }
