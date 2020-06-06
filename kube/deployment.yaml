@@ -21,16 +21,16 @@ spec:
           name: user-microservice
           ports: 
             - containerPort: 80
-          readinessProbe:
+          livenessProbe:
             httpGet:
-              path: /ready
+              path: /healthy
               port: 80
               scheme: HTTP
             initialDelaySeconds: 15
             periodSeconds: 15
-          livenessProbe:
+          readinessProbe:
             httpGet:
-              path: /healthy
+              path: /ready
               port: 80
               scheme: HTTP
             initialDelaySeconds: 15
