@@ -20,6 +20,14 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       
       - name: Decrypt the GPG encrypted config files
         run: gpg --quiet --batch --yes --passphrase ${{ secrets.GPG_PASSPHRASE }} --output ./${{ env.PROJECT_NAME }}/appsettings.json --decrypt ./${{ env.PROJECT_NAME }}/appsettings.json.gpg
