@@ -29,7 +29,7 @@ namespace UserMicroservice.Services
             if (!_hashGenerator.Verify(password, user.Salt, user.Password))
                 throw new InvalidPasswordException();
 
-            user.Token = _tokenGenerator.GenerateJwt(user.Id);
+            user.Token = _tokenGenerator.GenerateJwt(user.Id, user.Email, user.Username);
 
             return user.WithoutSensitiveData();
         }
@@ -43,7 +43,7 @@ namespace UserMicroservice.Services
             var user = await _repository.ReadByEmailAsync(payload.Email)
                        ?? throw new AccountNotFoundException();
 
-            user.Token = _tokenGenerator.GenerateJwt(user.Id);
+            user.Token = _tokenGenerator.GenerateJwt(user.Id, user.Email, user.Username);
 
             return user.WithoutSensitiveData();
         }
