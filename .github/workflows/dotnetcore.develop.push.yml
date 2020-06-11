@@ -32,7 +32,7 @@ jobs:
       image: mcr.microsoft.com/dotnet/core/sdk:3.1.201-bionic
     steps:
       - uses: actions/checkout@v2
-        witch:
+        with:
           fetch-depth: 0
       
       - name: Decrypt the GPG encrypted config files
