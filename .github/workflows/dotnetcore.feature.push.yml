@@ -5,10 +5,8 @@ on:
     branches: [feature/*]
 
 jobs:
-  build:
+  sonarcloud-scan:
     runs-on: ubuntu-18.04
-    container:
-      image: mcr.microsoft.com/dotnet/core/sdk:3.1.201-bionic
     steps:
       - uses: actions/checkout@v2
         with:
@@ -21,12 +19,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  build:
+    runs-on: ubuntu-18.04
+    container:
+      image: mcr.microsoft.com/dotnet/core/sdk:3.1.201-bionic
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       
       - name: Install dependencies
         run: dotnet restore
       
       - name: Build
         run: dotnet build
+      
+      - name: Test with code coverage
+        run: |
+          dotnet test --collect:"XPlat Code Coverage" --settings coverlet.runsettings.xml
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
@@ -35,6 +46,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      
-      - name: Test
-        run: dotnet test

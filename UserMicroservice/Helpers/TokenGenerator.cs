@@ -19,7 +19,7 @@ namespace UserMicroservice.Helpers
 
         public string GenerateJwt(Guid userId)
         {
-            var key = Encoding.ASCII.GetBytes(_appSettings.JwtSecret);
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -68,7 +68,7 @@ namespace UserMicroservice.Helpers
                 if (jwtToken == null)
                     return null;
 
-                var key = Convert.FromBase64String(_appSettings.JwtSecret);
+                var key = Convert.FromBase64String(_appSettings.Secret);
                 
 
                 var parameters = new TokenValidationParameters()

@@ -1,15 +1,15 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
-metadata: 
-  name: user-microservice-ingress
-  namespace: dwetter-develop
+metadata:
   annotations: 
-    cert-manager.io/cluster-issuer: "letsencrypt"
+    cert-manager.io/cluster-issuer: "letsencrypt-develop"
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /    
     nginx.ingress.kubernetes.io/ssl-passthrough: "false"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: user-microservice-ingress
+  namespace: dwetter-develop
 spec:
   rules:
     - host: user.develop.dwetter.nl
@@ -19,10 +19,10 @@ spec:
               serviceName: user-microservice
               servicePort: 80
   tls:
-    - secretName: user-microservice-tls
-      hosts:
+    - hosts: 
         - user.develop.dwetter.nl
+      secretName: user-microservice-tls
 status:
   loadBalancer:
     ingress:
-      - ip: 207.180.245.152
+      - {}
