@@ -1,7 +1,7 @@
-﻿﻿using System;
+using System;
 using System.IdentityModel.Tokens.Jwt;
- using System.Linq;
- using System.Security.Claims;
+using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -11,16 +11,19 @@ namespace UserMicroservice.Helpers
 {
     public class TokenGenerator : ITokenGenerator
     {
-        private readonly AppSettings _appSettings;
+        private readonly TokenSettings _tokenSettings;
 
-        public TokenGenerator(IOptions<AppSettings> appSettings)
+        public TokenGenerator(IOptions<TokenSettings> appSettings)
         {
-            _appSettings = appSettings.Value;
+            _tokenSettings = appSettings.Value;
         }
 
         public string GenerateJwt(Guid userId, string email, string username)
         {
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(_tokenSettings.Secret);
+            var issuer = _tokenSettings.Issuer;
+            var audience = _tokenSettings.Audience;
+            
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -29,6 +32,9 @@ namespace UserMicroservice.Helpers
                     new Claim(ClaimTypes.Email, email),
                     new Claim(ClaimTypes.Name, username)
                 }),
+                Issuer = issuer,
+                Audience = audience,
+                IssuedAt = DateTime.UtcNow,
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
@@ -43,17 +49,24 @@ namespace UserMicroservice.Helpers
 
         public bool ValidateJwt(string token)
         {
-            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_appSettings.Secret));
+            var issuer = _tokenSettings.Issuer;
+            var audience = _tokenSettings.Audience;
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_tokenSettings.Secret));
+
             var tokenHandler = new JwtSecurityTokenHandler();
 
             try
             {
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    IssuerSigningKey = key
+                    
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = key,
                 }, out var securityToken);
             }
             catch
