@@ -109,7 +109,7 @@ namespace UserMicroservice
 
             // Configure JWT authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
-            var signingKey = Encoding.ASCII.GetBytes(appSettings.JwtSecret);
+            var signingKey = Encoding.ASCII.GetBytes(appSettings.Secret);
 
             services.AddAuthentication(options =>
                 {

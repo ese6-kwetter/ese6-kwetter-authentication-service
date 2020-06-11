@@ -2,7 +2,7 @@ name: .NET Core push on develop branch
 
 on:
   push:
-    branches: [develop, feature/*]
+    branches: [feature/*]
 
 env:
   PROJECT_NAME: UserMicroservice
