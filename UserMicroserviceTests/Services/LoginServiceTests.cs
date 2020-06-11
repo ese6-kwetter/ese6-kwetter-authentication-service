@@ -37,7 +37,7 @@ namespace UserMicroserviceTests.Services
             const string jwt = "jwt";
 
             _hashGenerator.Setup(h => h.Verify(password, salt, hashedPassword)).Returns(true);
-            _tokenGenerator.Setup(t => t.GenerateJwt(id)).Returns(jwt);
+            _tokenGenerator.Setup(t => t.GenerateJwt(id, email, username)).Returns(jwt);
 
             var user = new User
             {
