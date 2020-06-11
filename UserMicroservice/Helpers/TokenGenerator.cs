@@ -1,6 +1,7 @@
-﻿using System;
+﻿﻿using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+ using System.Linq;
+ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -17,14 +18,16 @@ namespace UserMicroservice.Helpers
             _appSettings = appSettings.Value;
         }
 
-        public string GenerateJwt(Guid userId)
+        public string GenerateJwt(Guid userId, string email, string username)
         {
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, userId.ToString())
+                    new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Name, username)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(
@@ -38,55 +41,35 @@ namespace UserMicroservice.Helpers
             return tokenHandler.WriteToken(token);
         }
 
-        public bool ValidateJwt(string token, string claim)
+        public bool ValidateJwt(string token)
         {
-            var principal = GetPrincipal(token);
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_appSettings.Secret));
+            var tokenHandler = new JwtSecurityTokenHandler();
 
-            if (principal == null)
-                return false;
-
-            ClaimsIdentity identity;
             try
             {
-                identity = (ClaimsIdentity)principal.Identity;
-            }
-            catch (NullReferenceException)
-            {
-                return false;
-            }
-            
-            return identity.FindFirst(ClaimTypes.Name).Value.Equals(claim);
-        }
-
-        private ClaimsPrincipal GetPrincipal(string token)
-        {
-            try
-            {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var jwtToken = (JwtSecurityToken) tokenHandler.ReadToken(token);
-
-                if (jwtToken == null)
-                    return null;
-
-                var key = Convert.FromBase64String(_appSettings.Secret);
-                
-
-                var parameters = new TokenValidationParameters()
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
-                    RequireExpirationTime = true,
+                    ValidateIssuerSigningKey = true,
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    IssuerSigningKey = new SymmetricSecurityKey(key)
-                };
-
-                var principal = tokenHandler.ValidateToken(token, parameters, out var securityToken);
-                
-                return principal;
+                    IssuerSigningKey = key
+                }, out var securityToken);
             }
-            catch (Exception e)
+            catch
             {
-                return null;
+                return false;
             }
+
+            return true;
+        }
+
+        public string GetJwtClaim(string token, string claimType)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            return securityToken?.Claims.First(claim => claim.Type == claimType).Value;
         }
     }
 }
