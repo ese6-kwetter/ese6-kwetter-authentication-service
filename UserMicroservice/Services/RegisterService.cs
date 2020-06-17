@@ -17,8 +17,12 @@ namespace UserMicroservice.Services
         private readonly IRegexValidator _regexValidator;
         private readonly IUserRepository _repository;
 
-        public RegisterService(IUserRepository repository, IRegexValidator regexValidator, IHashGenerator hashGenerator,
-            IMessageQueuePublisher messageQueuePublisher)
+        public RegisterService(
+            IUserRepository repository,
+            IRegexValidator regexValidator,
+            IHashGenerator hashGenerator,
+            IMessageQueuePublisher messageQueuePublisher
+        )
         {
             _repository = repository;
             _regexValidator = regexValidator;
@@ -43,27 +47,37 @@ namespace UserMicroservice.Services
             var salt = _hashGenerator.Salt();
             var hashedPassword = _hashGenerator.Hash(password, salt);
 
-            var user = await _repository.CreateAsync(new User
-            {
-                Username = username,
-                Email = email,
-                Password = hashedPassword,
-                Salt = salt
-            });
-
-            await _messageQueuePublisher.PublishMessageAsync("Dwetter", "EmailMicroservice", "RegisterUser",
-                JsonConvert.SerializeObject(new object[]
+            var user = await _repository.CreateAsync(
+                new User
                 {
-                    user.Email,
-                    user.Username
-                }));
+                    Username = username,
+                    Email = email,
+                    Password = hashedPassword,
+                    Salt = salt
+                }
+            );
 
-            await _messageQueuePublisher.PublishMessageAsync("Dwetter", "ProfileMicroservice", "RegisterUser",
-                JsonConvert.SerializeObject(new object[]
+            await _messageQueuePublisher.PublishMessageAsync(
+                "Dwetter",
+                "EmailMicroservice",
+                "RegisterUser",
+                new
                 {
-                    user.Id,
-                    user.Username
-                }));
+                    email = user.Email,
+                    username = user.Username
+                }
+            );
+
+            await _messageQueuePublisher.PublishMessageAsync(
+                "Dwetter",
+                "ProfileMicroservice",
+                "RegisterUser",
+                new
+                {
+                    userId = user.Id,
+                    username = user.Username
+                }
+            );
 
             return user.WithoutSensitiveData();
         }
@@ -85,29 +99,39 @@ namespace UserMicroservice.Services
                 throw new EmailAlreadyExistsException();
             }
 
-            user = await _repository.CreateAsync(new User
-            {
-                Username = payload.Name,
-                Email = payload.Email,
-                OAuthIssuer = "Google",
-                OAuthSubject = payload.Subject
-            });
+            user = await _repository.CreateAsync(
+                new User
+                {
+                    Username = payload.Name,
+                    Email = payload.Email,
+                    OAuthIssuer = "Google",
+                    OAuthSubject = payload.Subject
+                }
+            );
 
             // Publish message to EmailMicroservice queue
-            await _messageQueuePublisher.PublishMessageAsync("Dwetter", "EmailMicroservice", "RegisterUser",
-                JsonConvert.SerializeObject(new object[]
+            await _messageQueuePublisher.PublishMessageAsync(
+                "Dwetter",
+                "EmailMicroservice",
+                "RegisterUser",
+                new
                 {
-                    user.Id,
-                    user.Username
-                }));
+                    email = user.Email,
+                    username = user.Username
+                }
+            );
 
             // Publish message to ProfileMicroservice queue
-            await _messageQueuePublisher.PublishMessageAsync("Dwetter", "ProfileMicroservice", "RegisterUser",
-                JsonConvert.SerializeObject(new object[]
+            await _messageQueuePublisher.PublishMessageAsync(
+                "Dwetter",
+                "ProfileMicroservice",
+                "RegisterUser",
+                new
                 {
-                    user.Id,
-                    user.Username
-                }));
+                    userId = user.Id,
+                    username = user.Username
+                }
+            );
 
             return user.WithoutSensitiveData();
         }
