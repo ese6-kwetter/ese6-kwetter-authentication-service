@@ -188,19 +188,10 @@ namespace UserMicroservice
             app.UseHealthChecks("/healthy", new HealthCheckOptions
             {
                 Predicate = r => r.Name.Contains("healthy")
-            });
+            }); 
             app.UseHealthChecks("/ready", new HealthCheckOptions
             {
                 Predicate = r => r.Tags.Contains("services")
-            });
-
-            app.Map("/switch", appBuilder =>
-            {
-                appBuilder.Run(async context =>
-                {
-                    _running = !_running;
-                    await context.Response.WriteAsync($"{Environment.MachineName} running {_running}");
-                });
             });
 
             #endregion
