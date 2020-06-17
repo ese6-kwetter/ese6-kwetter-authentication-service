@@ -10,27 +10,27 @@ namespace UserMicroservice.Services
 {
     public class LoginService : ILoginService
     {
-        private readonly IUserRepository _repository;
         private readonly IHashGenerator _hashGenerator;
+        private readonly IUserRepository _repository;
         private readonly ITokenGenerator _tokenGenerator;
-        
+
         public LoginService(IUserRepository repository, IHashGenerator hashGenerator, ITokenGenerator tokenGenerator)
         {
             _repository = repository;
             _hashGenerator = hashGenerator;
             _tokenGenerator = tokenGenerator;
         }
-        
+
         public async Task<User> LoginPasswordAsync(string email, string password)
         {
             var user = await _repository.ReadByEmailAsync(email)
-                ?? throw new EmailNotFoundException();
-            
+                       ?? throw new EmailNotFoundException();
+
             if (!_hashGenerator.Verify(password, user.Salt, user.Password))
                 throw new InvalidPasswordException();
 
-            user.Jwt = _tokenGenerator.GenerateJwt(user.Id);
-            
+            user.Token = _tokenGenerator.GenerateJwt(user.Id, user.Email, user.Username);
+
             return user.WithoutSensitiveData();
         }
 
@@ -41,9 +41,9 @@ namespace UserMicroservice.Services
                 ?? throw new AccountNotFoundException();
 
             var user = await _repository.ReadByEmailAsync(payload.Email)
-                ?? throw new AccountNotFoundException();
+                       ?? throw new AccountNotFoundException();
 
-            user.Jwt = _tokenGenerator.GenerateJwt(user.Id);
+            user.Token = _tokenGenerator.GenerateJwt(user.Id, user.Email, user.Username);
 
             return user.WithoutSensitiveData();
         }

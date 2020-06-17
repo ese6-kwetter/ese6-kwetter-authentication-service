@@ -16,7 +16,6 @@ namespace UserMicroservice
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseSentry();
                 });
         }
     }

@@ -1,23 +1,43 @@
-name: .NET Core push on master branch
+name: .NET Core push on tag
 
 on:
   push:
-    branches: [master]
+    tags:
+      - '**'
 
 env:
-  DOCKER_IMAGE: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.sha }}
-  DOCKER_IMAGE_LATEST: ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.DOCKER_REPOSITORY }}:latest
+  PROJECT_NAME: UserMicroservice
+  DOCKER_ORGANIZATION: ese6dwetter
+  DOCKER_REPOSITORY: user-microservice
+  KUBERNETES_NAMESPACE: dwetter
 
 jobs:
+  sonarcloud-scan:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   build:
     runs-on: ubuntu-18.04
     container:
       image: mcr.microsoft.com/dotnet/core/sdk:3.1.201-bionic
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       
       - name: Decrypt the GPG encrypted config files
-        run: gpg --quiet --batch --yes --passphrase ${{ secrets.GPG_PASSPHRASE }} --output ./UserMicroservice/appsettings.json --decrypt ./UserMicroservice/appsettings.json.gpg
+        run: gpg --quiet --batch --yes --passphrase ${{ secrets.GPG_PASSPHRASE }} --output ./${{ env.PROJECT_NAME }}/appsettings.json --decrypt ./${{ env.PROJECT_NAME }}/appsettings.json.gpg
       
       - name: Install dependencies
         run: dotnet restore
@@ -50,7 +70,7 @@ jobs:
           path: ./kube
 
   deliver:
-    needs: build
+    needs: [sonarcloud-scan, build]
     runs-on: ubuntu-18.04
     steps:
       - name: Download release artifact
@@ -64,13 +84,16 @@ jobs:
         with:
           name: dockerfile-artifact
           path: .
+          
+      - name: Get tag version
+        id: get_tag_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       
       - name: Deliver Docker image
         run: |
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_ACCESS_TOKEN }}
-          docker build -t $DOCKER_IMAGE -t $DOCKER_IMAGE_LATEST .
-          docker push $DOCKER_IMAGE
-          docker push $DOCKER_IMAGE_LATEST
+          docker build -t ${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_REPOSITORY }}:${{ steps.get_tag_version.outputs.VERSION }} .
+          docker push ${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_REPOSITORY }}:${{ steps.get_tag_version.outputs.VERSION }}
   
   deploy:
     needs: deliver
@@ -81,6 +104,10 @@ jobs:
         with:
             name: kubernetes-artifact
             path: ./kube
+          
+      - name: Get tag version
+        id: get_tag_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       
       - name: Setup Kubectl
         uses: azure/setup-kubectl@v1
@@ -94,12 +121,12 @@ jobs:
       - name: Deploy Kubernetes with manifests
         uses: azure/k8s-deploy@v1
         with:
-            namespace: dwetter-master
+            namespace: ${{ env.KUBERNETES_NAMESPACE }}
             manifests: |
               ./kube/autoscaler.yaml
-              ./kube/certificate.yaml
+              ./kube/cluster-issuer.yaml
               ./kube/deployment.yaml
               ./kube/ingress.yaml
               ./kube/service.yaml
             images: |
-              ${{ secrets.DOCKER_ORGANIZATION }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.sha }}
+              ${{ env.DOCKER_ORGANIZATION }}/${{ env.DOCKER_REPOSITORY }}:${{ steps.get_tag_version.outputs.VERSION }}
