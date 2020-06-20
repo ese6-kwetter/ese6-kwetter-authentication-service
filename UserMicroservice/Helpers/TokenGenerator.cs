@@ -47,36 +47,6 @@ namespace UserMicroservice.Helpers
             return tokenHandler.WriteToken(token);
         }
 
-        public bool ValidateJwt(string token)
-        {
-            var issuer = _tokenSettings.Issuer;
-            var audience = _tokenSettings.Audience;
-            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_tokenSettings.Secret));
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-            try
-            {
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    
-                    ValidIssuer = issuer,
-                    ValidAudience = audience,
-                    IssuerSigningKey = key,
-                }, out var securityToken);
-            }
-            catch
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         public string GetJwtClaim(string token, string claimType)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
