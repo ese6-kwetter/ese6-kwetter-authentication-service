@@ -61,23 +61,23 @@ namespace UserMicroservice.Services
                 "Dwetter",
                 "EmailMicroservice",
                 "RegisterUser",
-                new
+                JsonConvert.SerializeObject(new
                 {
                     email = user.Email,
                     username = user.Username
                 }
-            );
+            ));
 
             await _messageQueuePublisher.PublishMessageAsync(
                 "Dwetter",
                 "ProfileMicroservice",
                 "RegisterUser",
-                new
+                JsonConvert.SerializeObject(new
                 {
                     userId = user.Id,
                     username = user.Username
                 }
-            );
+            ));
 
             return user.WithoutSensitiveData();
         }
