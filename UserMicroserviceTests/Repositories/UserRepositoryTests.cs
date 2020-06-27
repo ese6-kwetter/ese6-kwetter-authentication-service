@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Mongo2Go;
 using NUnit.Framework;
@@ -132,7 +133,7 @@ namespace UserMicroserviceTests.Repositories
             await _repository.CreateAsync(user2);
 
             // Act
-            var result = await _repository.ReadAsync();
+            var result = (await _repository.ReadAsync()).ToList();
 
             // Assert
             Assert.AreEqual(2, result.Count);

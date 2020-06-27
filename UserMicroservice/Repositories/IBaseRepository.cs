@@ -18,7 +18,7 @@ namespace UserMicroservice.Repositories
         ///     Gets a list of all the entities.
         /// </summary>
         /// <returns>List of all the entities</returns>
-        Task<List<T>> ReadAsync();
+        Task<IEnumerable<T>> ReadAsync();
 
         /// <summary>
         ///     Gets a single entity by their Guid.
