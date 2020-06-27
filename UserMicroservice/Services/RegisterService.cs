@@ -72,12 +72,12 @@ namespace UserMicroservice.Services
                 "Dwetter",
                 "ProfileMicroservice",
                 "RegisterUser",
-                JsonConvert.SerializeObject(new
+                new
                 {
                     userId = user.Id,
                     username = user.Username
                 }
-            ));
+            );
 
             return user.WithoutSensitiveData();
         }
